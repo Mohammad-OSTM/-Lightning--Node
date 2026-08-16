@@ -53,12 +53,12 @@
 
         .header {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1100px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .brand-logo {
@@ -105,24 +105,15 @@
             box-shadow: 0 0 12px rgba(37, 99, 235, 0.6);
         }
 
-        .hero-title {
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 64px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 30px rgba(37, 99, 235, 0.6);
-            text-align: center;
-        }
-
+        /* Top Bar Stats */
         .stats-container {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
             width: 100%;
             max-width: 1100px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .stat-card {
@@ -130,10 +121,10 @@
             border: 1px solid rgba(59, 130, 246, 0.35);
             backdrop-filter: blur(12px);
             border-radius: 12px;
-            padding: 16px 14px;
+            padding: 14px;
             text-align: center;
             flex: 1;
-            min-width: 150px;
+            min-width: 140px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
@@ -141,15 +132,8 @@
             flex: 1.4;
         }
 
-        .stat-label {
-            font-size: 12px;
-            color: #94a3b8;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
         .stat-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
             color: #ffffff;
         }
@@ -159,23 +143,27 @@
             text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
         }
 
+        /* Search Input Bar */
         .search-container {
             width: 100%;
-            max-width: 540px;
+            max-width: 580px;
             position: relative;
+            margin-bottom: 25px;
         }
 
         .search-input {
             width: 100%;
             padding: 14px 24px;
-            padding-right: 60px;
+            padding-right: 65px;
             background: rgba(15, 23, 42, 0.85);
             border: 1px solid rgba(56, 189, 248, 0.45);
             backdrop-filter: blur(10px);
             border-radius: 40px;
             color: #ffffff;
-            font-size: 15px;
+            font-size: 18px;
+            font-weight: 600;
             outline: none;
+            text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
         }
 
@@ -184,8 +172,8 @@
             right: 6px;
             top: 50%;
             transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             background: linear-gradient(135deg, #38bdf8, #2563eb);
             border: none;
             border-radius: 50%;
@@ -194,7 +182,56 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+        }
+
+        /* Result Cards Grid (3x3 Layout) */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.4s ease;
+        }
+
+        .results-grid.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .node-card {
+            background: rgba(30, 58, 138, 0.45);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            backdrop-filter: blur(14px);
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .node-card-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #cbd5e1;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .node-card-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #38bdf8;
+            word-break: break-all;
+        }
+
+        .node-card-value.online {
+            color: #38bdf8;
         }
 
         .footer {
@@ -204,6 +241,12 @@
             color: #64748b;
             text-align: center;
             width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -215,7 +258,7 @@
         <div class="header interactive">
             <div class="brand-logo">
                 <span class="lightning-icon">⚡</span>
-                <span>LND WORLD</span>
+                <span>LNDHUB</span>
             </div>
             <div class="nav-icons">
                 <div class="nav-btn">⚡</div>
@@ -225,34 +268,69 @@
             </div>
         </div>
 
-        <h1 class="hero-title">LND WORLD</h1>
-
+        <!-- Top Overview Bar -->
         <div class="stats-container interactive">
             <div class="stat-card">
-                <div class="stat-label">Total Nodes</div>
-                <div class="stat-value">6,013</div>
+                <div class="stat-value">6,012</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Active Channels</div>
-                <div class="stat-value">19,920</div>
+                <div class="stat-value">19,927</div>
             </div>
             <div class="stat-card large">
-                <div class="stat-label">Network Capacity</div>
-                <div class="stat-value">2,630.34 BTC</div>
+                <div class="stat-value">2,632.4 BTC</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">New Nodes</div>
-                <div class="stat-value">11</div>
+                <div class="stat-value">12</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">New Channels</div>
-                <div class="stat-value">274</div>
+                <div class="stat-value">281</div>
             </div>
         </div>
 
+        <!-- Dynamic ID Search Bar -->
         <div class="search-container interactive">
-            <input type="text" class="search-input" placeholder="Search Node ...">
-            <button class="search-btn">🔍</button>
+            <input type="text" id="nodeSearchInput" class="search-input" placeholder="Enter ID (e.g. 9508310099)" value="9508310099">
+            <button id="searchBtn" class="search-btn">🔍</button>
+        </div>
+
+        <!-- Dynamic Result Grid -->
+        <div id="resultsGrid" class="results-grid interactive visible">
+            <div class="node-card">
+                <div class="node-card-title">ON/OFF</div>
+                <div class="node-card-value online" id="val-status">Online</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">WALLET ADDRESS</div>
+                <div class="node-card-value" id="val-wallet">GyUkZPmeTClYPgTJHL1AElHsfee9934zpA3wfL2fkbYQ</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">STATUS TX</div>
+                <div class="node-card-value" id="val-tx">5d 8h 2m</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">COIN</div>
+                <div class="node-card-value" id="val-coin">SOL</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">FEE</div>
+                <div class="node-card-value" id="val-fee">14 SAT/VB</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">ACTIVE CHANNEL</div>
+                <div class="node-card-value" id="val-channel">Must Be Update Client</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">IP ADDRESS</div>
+                <div class="node-card-value" id="val-ip">🇦🇿 89.34.60.127</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">MODE</div>
+                <div class="node-card-value" id="val-mode">CPU</div>
+            </div>
+            <div class="node-card">
+                <div class="node-card-title">CHANNEL TYPE</div>
+                <div class="node-card-value" id="val-channeltype">6 Channel</div>
+            </div>
         </div>
 
         <footer class="footer interactive">
@@ -260,9 +338,10 @@
         </footer>
     </div>
 
+    <!-- 3D Globe & Dynamic Data Logic -->
     <script>
+        // --- 3D Background Logic ---
         const container = document.getElementById('globe-container');
-
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, -40, 190);
@@ -282,11 +361,9 @@
         globeGroup.position.y = -35;
         scene.add(globeGroup);
 
-        // Load World Map Texture to project Continent Points
         const loader = new THREE.TextureLoader();
         loader.crossOrigin = '';
         loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg', function (texture) {
-            
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             canvas.width = 1024;
@@ -301,7 +378,6 @@
                 const phi = Math.acos(-1 + (2 * i) / totalPoints);
                 const theta = Math.sqrt(totalPoints * Math.PI) * phi;
 
-                // Map 3D sphere coordinates to 2D image coordinates
                 const u = (theta / (2 * Math.PI)) % 1;
                 const v = phi / Math.PI;
 
@@ -309,7 +385,6 @@
                 const yImg = Math.floor(v * 512);
                 const index = (yImg * 1024 + xImg) * 4;
 
-                // Render points only on continents (brighter parts of texture)
                 if (imgData.data[index] > 40) {
                     const x = radius * Math.cos(theta) * Math.sin(phi);
                     const y = radius * Math.sin(theta) * Math.sin(phi);
@@ -332,7 +407,6 @@
             globeGroup.add(dotsMesh);
         });
 
-        // Blue Outer Atmosphere Glow Ring
         const glowGeo = new THREE.RingGeometry(radius + 2, radius + 22, 64);
         const glowMat = new THREE.MeshBasicMaterial({
             color: 0x1e88e5,
@@ -343,57 +417,71 @@
         const glowRing = new THREE.Mesh(glowGeo, glowMat);
         globeGroup.add(glowRing);
 
-        // Shooting Star
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x64b5f6, transparent: true, opacity: 0.8 });
-        const lineGeometry = new THREE.BufferGeometry();
-        lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
-        const shootingStar = new THREE.Line(lineGeometry, lineMaterial);
-        scene.add(shootingStar);
-
-        const starHeadGeo = new THREE.BufferGeometry();
-        starHeadGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0,0,0]), 3));
-        const starHeadMat = new THREE.PointsMaterial({ color: 0xffffff, size: 6, transparent: true });
-        const starHead = new THREE.Points(starHeadGeo, starHeadMat);
-        scene.add(starHead);
-
-        let progress = 0;
-        function updateShootingStar() {
-            progress += 0.01;
-            if (progress > 1) progress = 0;
-
-            const startX = -65, startY = 55, startZ = 20;
-            const endX = 15, endY = -20, endZ = 50;
-
-            const curX = startX + (endX - startX) * progress;
-            const curY = startY + (endY - startY) * progress;
-            const curZ = startZ + (endZ - startZ) * progress;
-
-            const linePos = shootingStar.geometry.attributes.position.array;
-            linePos[0] = curX - 18; linePos[1] = curY + 18; linePos[2] = curZ - 5;
-            linePos[3] = curX;       linePos[4] = curY;       linePos[5] = curZ;
-            shootingStar.geometry.attributes.position.needsUpdate = true;
-
-            const headPos = starHead.geometry.attributes.position.array;
-            headPos[0] = curX; headPos[1] = curY; headPos[2] = curZ;
-            starHead.geometry.attributes.position.needsUpdate = true;
-        }
-
         function animate() {
             requestAnimationFrame(animate);
-
             globeGroup.rotation.y += 0.0015;
-            updateShootingStar();
             controls.update();
-
             renderer.render(scene, camera);
         }
-
         animate();
 
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- Dynamic Search & Variable Output Logic ---
+        const searchInput = document.getElementById('nodeSearchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsGrid = document.getElementById('resultsGrid');
+
+        function generateVariableData(query) {
+            if (!query.trim()) return;
+
+            // Pseudo-random generator based on input string
+            let hash = 0;
+            for (let i = 0; i < query.length; i++) {
+                hash = query.charCodeAt(i) + ((hash << 5) - hash);
+            }
+
+            const coins = ['SOL', 'BTC', 'ETH', 'USDT', 'LNC'];
+            const modes = ['CPU', 'GPU', 'HYBRID', 'NODE-V2'];
+            const flags = ['🇦🇿', '🇩🇪', '🇺🇸', '🇫🇷', '🇬🇧', '🇯🇵'];
+            
+            const randomCoin = coins[Math.abs(hash) % coins.length];
+            const randomMode = modes[Math.abs(hash) % modes.length];
+            const randomFlag = flags[Math.abs(hash) % flags.length];
+            
+            const randomFee = (Math.abs(hash % 30) + 5);
+            const randomChannels = (Math.abs(hash % 12) + 1);
+            const randomDays = (Math.abs(hash % 10) + 1);
+            const randomHours = (Math.abs(hash % 24));
+            
+            // Generate unique wallet address based on query
+            const walletStr = "G" + Math.abs(hash).toString(36) + "UkZPmeTClYPgTJHL" + query.slice(-4) + "fee9934zpA3wfL2fkbYQ";
+            const ipStr = `${randomFlag} ${(Math.abs(hash) % 150) + 20}.${Math.abs(hash >> 2) % 255}.${Math.abs(hash >> 4) % 255}.${Math.abs(hash >> 6) % 255}`;
+
+            // Update UI elements dynamically
+            document.getElementById('val-wallet').innerText = walletStr;
+            document.getElementById('val-tx').innerText = `${randomDays}d ${randomHours}h ${Math.abs(hash % 59)}m`;
+            document.getElementById('val-coin').innerText = randomCoin;
+            document.getElementById('val-fee').innerText = `${randomFee} SAT/VB`;
+            document.getElementById('val-ip').innerText = ipStr;
+            document.getElementById('val-mode').innerText = randomMode;
+            document.getElementById('val-channeltype').innerText = `${randomChannels} Channel`;
+
+            resultsGrid.classList.add('visible');
+        }
+
+        searchBtn.addEventListener('click', () => {
+            generateVariableData(searchInput.value);
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                generateVariableData(searchInput.value);
+            }
         });
     </script>
 </body>
