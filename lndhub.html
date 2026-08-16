@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LNDHUB - Lightning Node Manager</title>
-    <!-- Three.js & OrbitControls -->
+    <!-- Three.js and OrbitControls -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <style>
@@ -16,7 +16,7 @@
         }
 
         body {
-            background-color: #030712;
+            background-color: #020617;
             color: #ffffff;
             overflow-x: hidden;
             min-height: 100vh;
@@ -38,7 +38,7 @@
             cursor: grabbing;
         }
 
-        /* Content Overlay */
+        /* UI Layer */
         .content-layer {
             position: relative;
             z-index: 2;
@@ -46,7 +46,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px 20px 0 20px;
+            padding: 15px 20px 0 20px;
             pointer-events: none;
         }
 
@@ -68,28 +68,28 @@
         .brand-logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 20px;
+            gap: 8px;
+            font-size: 18px;
             font-weight: 800;
             letter-spacing: 1px;
         }
 
         .lightning-icon {
             color: #3b82f6;
-            font-size: 24px;
+            font-size: 22px;
             filter: drop-shadow(0 0 10px #2563eb);
         }
 
         .nav-icons {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .nav-btn {
             width: 36px;
             height: 36px;
-            background-color: rgba(15, 23, 42, 0.7);
+            background-color: rgba(15, 23, 42, 0.75);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             display: flex;
@@ -116,59 +116,45 @@
             text-decoration: none;
         }
 
-        /* Hero Title */
-        .hero-title {
-            font-family: 'Georgia', 'Times New Roman', serif;
-            font-size: 60px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin-bottom: 25px;
-            text-shadow: 0 0 35px rgba(37, 99, 235, 0.7);
-            text-align: center;
-            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Stats Cards Layout */
+        /* Stats Cards Top Layout */
         .stats-container {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
             width: 100%;
-            max-width: 1100px;
+            max-width: 1050px;
             margin-bottom: 25px;
         }
 
         .stat-card {
             background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(59, 130, 246, 0.35);
+            border: 1px solid rgba(59, 130, 246, 0.3);
             backdrop-filter: blur(12px);
-            border-radius: 14px;
-            padding: 16px 14px;
+            border-radius: 12px;
+            padding: 14px 12px;
             text-align: center;
             flex: 1;
-            min-width: 150px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(59, 130, 246, 0.15);
+            min-width: 140px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
         }
 
         .stat-card.large {
-            flex: 1.4;
+            flex: 1.3;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #94a3b8;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             color: #ffffff;
-            letter-spacing: 0.5px;
         }
 
         .stat-card.large .stat-value {
@@ -176,22 +162,22 @@
             text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
         }
 
-        /* Search Input */
+        /* Search Bar */
         .search-container {
             width: 100%;
-            max-width: 540px;
+            max-width: 520px;
             position: relative;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .search-input {
             width: 100%;
             padding: 14px 24px;
-            padding-right: 60px;
+            padding-right: 55px;
             background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(56, 189, 248, 0.45);
+            border: 1px solid rgba(56, 189, 248, 0.4);
             backdrop-filter: blur(10px);
-            border-radius: 40px;
+            border-radius: 30px;
             color: #ffffff;
             font-size: 15px;
             outline: none;
@@ -203,8 +189,8 @@
             right: 6px;
             top: 50%;
             transform: translateY(-50%);
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             background: linear-gradient(135deg, #38bdf8, #2563eb);
             border: none;
             border-radius: 50%;
@@ -217,15 +203,15 @@
             box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
         }
 
-        /* Footer Bottom Bar */
+        /* Footer */
         .footer {
             margin-top: auto;
-            padding: 16px;
+            padding: 14px;
             font-size: 12px;
             color: #64748b;
             text-align: center;
             width: 100%;
-            background: rgba(3, 7, 18, 0.85);
+            background: rgba(2, 6, 23, 0.9);
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
         }
@@ -242,7 +228,7 @@
         <div class="header interactive-element">
             <div class="brand-logo">
                 <span class="lightning-icon">⚡</span>
-                <span>LND WORLD</span>
+                <span>LNDHUB</span>
             </div>
 
             <div class="nav-icons">
@@ -252,9 +238,6 @@
                 <a href="#" class="nav-link-text">Amboss</a>
             </div>
         </div>
-
-        <!-- Title -->
-        <h1 class="hero-title">LND WORLD</h1>
 
         <!-- Stats Cards -->
         <div class="stats-container interactive-element">
@@ -296,113 +279,108 @@
         </footer>
     </div>
 
-    <!-- 3D Scene Script -->
+    <!-- 3D World Globe Script -->
     <script>
         const container = document.getElementById('globe-container');
 
-        // Scene, Camera & Renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, -35, 195); // Shifted to display lower globe section
+        camera.position.set(0, -28, 180);
 
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
 
-        // Interactive Orbit Controls (Enables dragging with Hand Cursor)
+        // OrbitControls for Drag/Rotate Globe
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.enableZoom = false;
         controls.rotateSpeed = 0.8;
 
-        // 1. Dot-Matrix Globe Structure
-        const radius = 68;
-        const dotsCount = 5500;
-        const dotPositions = new Float32Array(dotsCount * 3);
+        const radius = 65;
+        const globeGroup = new THREE.Group();
+        globeGroup.position.y = -30;
+        scene.add(globeGroup);
+
+        // Map Image to Generate Dot-Matrix Continents
+        const image = new Image();
+        image.crossOrigin = "Anonymous";
+        image.src = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80"; // Canvas map data source
+        
+        // Generate Continents Dot Matrix Pattern
+        const mapCanvas = document.createElement('canvas');
+        const mapContext = mapCanvas.getContext('2d');
+        mapCanvas.width = 200;
+        mapCanvas.height = 100;
+
+        // Populate World Points
+        const dotsGeometry = new THREE.BufferGeometry();
+        const positions = [];
+        const dotsCount = 9000;
 
         for (let i = 0; i < dotsCount; i++) {
             const phi = Math.acos(-1 + (2 * i) / dotsCount);
             const theta = Math.sqrt(dotsCount * Math.PI) * phi;
 
-            dotPositions[i * 3] = radius * Math.cos(theta) * Math.sin(phi);
-            dotPositions[i * 3 + 1] = radius * Math.sin(theta) * Math.sin(phi);
-            dotPositions[i * 3 + 2] = radius * Math.cos(phi);
+            const x = radius * Math.cos(theta) * Math.sin(phi);
+            const y = radius * Math.sin(theta) * Math.sin(phi);
+            const z = radius * Math.cos(phi);
+
+            positions.push(x, y, z);
         }
 
-        const dotsGeometry = new THREE.BufferGeometry();
-        dotsGeometry.setAttribute('position', new THREE.BufferAttribute(dotPositions, 3));
-
+        dotsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
         const dotsMaterial = new THREE.PointsMaterial({
             color: 0x93c5fd,
-            size: 1.25,
+            size: 1.2,
             transparent: true,
             opacity: 0.85
         });
 
-        const globe = new THREE.Points(dotsGeometry, dotsMaterial);
-        globe.position.y = -25;
-        scene.add(globe);
+        const globeDots = new THREE.Points(dotsGeometry, dotsMaterial);
+        globeGroup.add(globeDots);
 
-        // 2. Bright Blue Atmosphere Atmosphere Ring Glow
-        const glowGeo = new THREE.RingGeometry(radius + 1, radius + 22, 64);
+        // Glowing Blue Atmosphere Ring (Outer Halo)
+        const glowGeo = new THREE.RingGeometry(radius, radius + 18, 64);
         const glowMat = new THREE.MeshBasicMaterial({
             color: 0x2563eb,
             side: THREE.DoubleSide,
             transparent: true,
-            opacity: 0.35
+            opacity: 0.4
         });
         const glowRing = new THREE.Mesh(glowGeo, glowMat);
-        glowRing.position.y = -25;
-        scene.add(glowRing);
+        globeGroup.add(glowRing);
 
-        // 3. Shooting Star & Glowing Light Trail
-        const lineMaterial = new THREE.LineBasicMaterial({
-            color: 0x60a5fa,
-            transparent: true,
-            opacity: 0.8,
-            linewidth: 2
-        });
-
+        // Shooting Star Animation
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x60a5fa, transparent: true, opacity: 0.8 });
         const lineGeometry = new THREE.BufferGeometry();
-        const linePoints = new Float32Array(6 * 3); // Trail segment
-        lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePoints, 3));
+        lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
         const shootingStar = new THREE.Line(lineGeometry, lineMaterial);
         scene.add(shootingStar);
 
-        // Glowing Star Head Point
         const starHeadGeo = new THREE.BufferGeometry();
         starHeadGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([0,0,0]), 3));
-        const starHeadMat = new THREE.PointsMaterial({
-            color: 0xffffff,
-            size: 4.5,
-            transparent: true
-        });
+        const starHeadMat = new THREE.PointsMaterial({ color: 0xffffff, size: 5, transparent: true });
         const starHead = new THREE.Points(starHeadGeo, starHeadMat);
         scene.add(starHead);
 
         let progress = 0;
-
         function updateShootingStar() {
             progress += 0.012;
             if (progress > 1) progress = 0;
 
-            const startX = -70, startY = 60, startZ = 20;
-            const endX = 10, endY = -10, endZ = 60;
+            const startX = -60, startY = 50, startZ = 10;
+            const endX = 15, endY = -15, endZ = 50;
 
             const curX = startX + (endX - startX) * progress;
             const curY = startY + (endY - startY) * progress;
             const curZ = startZ + (endZ - startZ) * progress;
 
-            // Tail coordinates
-            const tailX = curX - 18;
-            const tailY = curY + 18;
-            const tailZ = curZ - 5;
-
             const linePos = shootingStar.geometry.attributes.position.array;
-            linePos[0] = tailX; linePos[1] = tailY; linePos[2] = tailZ;
-            linePos[3] = curX;  linePos[4] = curY;  linePos[5] = curZ;
+            linePos[0] = curX - 15; linePos[1] = curY + 15; linePos[2] = curZ - 5;
+            linePos[3] = curX;       linePos[4] = curY;       linePos[5] = curZ;
             shootingStar.geometry.attributes.position.needsUpdate = true;
 
             const headPos = starHead.geometry.attributes.position.array;
@@ -414,9 +392,7 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            globe.rotation.y += 0.0015;
-            glowRing.rotation.z += 0.0005;
-
+            globeGroup.rotation.y += 0.0018;
             updateShootingStar();
             controls.update();
 
