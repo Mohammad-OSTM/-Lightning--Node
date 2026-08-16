@@ -78,15 +78,37 @@
         .rocker-switch.on { background-color: #66bb6a; }
         .rocker-switch.on::after { left: 18px; }
 
-        .top-dashed-container { margin-left: 10px; }
-        .dashed-block { border: 1.5px dashed #66bb6a; background-color: rgba(102, 187, 106, 0.1); color: #66bb6a; padding: 4px 6px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 65px; opacity: 0.2; transition: all 0.3s; }
-        .dashed-block.active { opacity: 1; background-color: #66bb6a; color: #000; border-style: solid; font-weight: bold; }
+        /* Unified Validator Cards Style */
+        .top-dashed-container { margin-left: 8px; }
+        
+        .validator-card { 
+            width: 82px; 
+            height: 62px; 
+            background-color: transparent; 
+            border: 1.5px dashed #555; 
+            color: transparent; 
+            padding: 4px; 
+            border-radius: 3px; 
+            font-size: 8px; 
+            text-align: center; 
+            font-weight: 500; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            line-height: 1.15; 
+            transition: all 0.3s; 
+        }
+
+        .validator-card.active { 
+            background-color: #66bb6a; 
+            color: #000; 
+            border: 1.5px dashed #2e7d32; 
+            font-weight: bold; 
+        }
 
         .fee-info { font-size: 13px; margin-bottom: 6px; color: #eee; font-weight: 500; }
-        
         .blocks-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .block-card { flex: 1; background-color: transparent; border: 1px dashed #555; color: transparent; padding: 6px 4px; border-radius: 3px; font-size: 8.5px; text-align: center; font-weight: 500; transition: all 0.3s; }
-        .block-card.active { background-color: #66bb6a; color: #000; border-style: solid; border-color: #2e7d32; }
 
         .footer { display: flex; justify-content: space-between; align-items: center; background-color: #222; padding: 6px 12px; border-radius: 4px; font-size: 12px; }
         .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
@@ -211,7 +233,7 @@
                 </div>
 
                 <div class="top-dashed-container">
-                    <div class="dashed-block" id="top-dashed-block">
+                    <div class="validator-card" id="top-dashed-block">
                         0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
                     </div>
                 </div>
@@ -221,11 +243,11 @@
             <div class="fee-info">High Priority: <span id="high-priority">0</span> SAT/VB</div>
 
             <div class="blocks-row" id="blocks-container">
-                <div class="block-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
+                <div class="validator-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
+                <div class="validator-card">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
+                <div class="validator-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
+                <div class="validator-card">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
+                <div class="validator-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
             </div>
 
             <div class="footer">
@@ -243,8 +265,12 @@
     let isRunning = false;
     let swapActive = false;
     let timer1;
-    let progressDays = parseInt(localStorage.getItem('nodeProgressDays')) || 0;
     let currentCardIndex = 0;
+    
+    // محاسبه دقیق زمان ۲۴ ساعته واقعی (بر حسب میلی‌ثانیه)
+    const DAY_IN_MS = 24 * 60 * 60 * 1000;
+    let totalActiveTime = parseFloat(localStorage.getItem('nodeTotalActiveTime')) || 0;
+    let lastStartTime = null;
 
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
@@ -255,16 +281,27 @@
         return username.substring(0, 10);
     }
 
+    function calculateDays() {
+        let currentSessionTime = 0;
+        if (isRunning && lastStartTime) {
+            currentSessionTime = Date.now() - lastStartTime;
+        }
+        let total = totalActiveTime + currentSessionTime;
+        let days = Math.floor(total / DAY_IN_MS);
+        return Math.min(days, 9);
+    }
+
     function updateProgressBarUI() {
+        let days = calculateDays();
         const cells = document.querySelectorAll('.progress-cell');
         cells.forEach((cell, idx) => {
-            if (idx < progressDays) {
+            if (idx < days) {
                 cell.classList.add('active');
             } else {
                 cell.classList.remove('active');
             }
         });
-        document.getElementById('days-counter').innerText = `${progressDays} / 9 day`;
+        document.getElementById('days-counter').innerText = `${days} / 9 day`;
     }
 
     function showDashboard() {
@@ -299,7 +336,6 @@
             document.getElementById('disp-wallet').innerText = wa;
             document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
             
-            // بازیابی میزان پیشرفت روزها از قبل
             updateProgressBarUI();
         }, 1200);
     }
@@ -313,11 +349,13 @@
             btn.innerText = 'STOP';
             btn.classList.add('stop-mode');
             
+            lastStartTime = Date.now();
+
             // روشن کردن Satoshi SWAP
             swapActive = true;
             document.getElementById('swap-switch').classList.add('on');
 
-            // فعال کردن کانال‌ها به‌صورت خودکار
+            // فعال کردن تیک کانال‌ها
             document.querySelectorAll('.channel-item').forEach(item => item.classList.add('active'));
 
             startProcessing();
@@ -326,14 +364,20 @@
             btn.classList.remove('stop-mode');
             clearInterval(timer1);
             
-            // خاموش کردن ولیدیتورها و تنظیمات در حالت Stop
-            document.querySelectorAll('.block-card').forEach(card => card.classList.remove('active'));
-            document.getElementById('top-dashed-block').classList.remove('active');
+            // ذخیره زمان سپری شده
+            if (lastStartTime) {
+                totalActiveTime += (Date.now() - lastStartTime);
+                localStorage.setItem('nodeTotalActiveTime', totalActiveTime);
+                lastStartTime = null;
+            }
+
+            // غیرفعال کردن ولیدیتورها در حالت STOP
+            document.querySelectorAll('.validator-card').forEach(card => card.classList.remove('active'));
             document.getElementById('rent-power').innerText = "0.0";
             document.getElementById('tax-fee').innerText = "0/0";
             document.getElementById('high-priority').innerText = "0";
             
-            // خاموش کردن سوئیچ ساتوشی SWAP
+            // غیرفعال کردن کلید سوئیچ ساتوشی
             swapActive = false;
             document.getElementById('swap-switch').classList.remove('on');
             
@@ -341,6 +385,7 @@
             document.querySelectorAll('.channel-item').forEach(item => item.classList.remove('active'));
             
             currentCardIndex = 0;
+            updateProgressBarUI();
         }
     }
 
@@ -366,10 +411,10 @@
         timer1 = setInterval(() => {
             if (!isRunning) return;
 
-            const cards = document.querySelectorAll('.block-card');
+            const cards = document.querySelectorAll('.blocks-row .validator-card');
             const topBlock = document.getElementById('top-dashed-block');
 
-            // پر شدن دونه‌دونه ولیدیتورها از سمت چپ
+            // پر شدن دونه‌دونه ۵ ولیدیتور پایین از سمت چپ
             if (currentCardIndex < cards.length) {
                 let card = cards[currentCardIndex];
                 card.classList.add('active');
@@ -377,12 +422,13 @@
                 card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
                 currentCardIndex++;
             } else if (currentCardIndex === cards.length) {
+                // پر شدن ولیدیتور بالا پس از ۵ کارت پایین
                 topBlock.classList.add('active');
                 document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
                 currentCardIndex++;
             } else {
-                // به‌روزرسانی مقادیر کارت‌های فعال
+                // به‌روزرسانی زنده مقادیر
                 cards.forEach(card => {
                     if (card.classList.contains('active')) {
                         card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
@@ -404,14 +450,10 @@
             document.getElementById('tax-fee').innerText = `${lowTax}/${highTax}`;
             document.getElementById('high-priority').innerText = Math.floor(Math.random() * 8 + 22);
 
-            // افزایش تدریجی روزها و ذخیره‌سازی پیشرفت (حداکثر ۹ روز)
-            if (Math.random() < 0.15 && progressDays < 9) {
-                progressDays++;
-                localStorage.setItem('nodeProgressDays', progressDays);
-                updateProgressBarUI();
-            }
+            // بروزرسانی مربع‌های سبز بر اساس تایمر ۲۴ ساعته واقعی
+            updateProgressBarUI();
 
-        }, 1000);
+        }, 1200);
     }
 </script>
 
