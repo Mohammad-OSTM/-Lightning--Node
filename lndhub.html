@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LNDHUB - Lightning Node Manager</title>
+  
+  <!-- کتابخانه‌های مورد نیاز برای رندر کره زمین ۳ بعدی -->
+  <script src="https://unpkg.com/three"></script>
+  <script src="https://unpkg.com/globe.gl"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -12,14 +17,42 @@
     }
 
     body {
-      background-color: #0d1322;
+      background-color: #0b0e14;
       color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+    }
+
+    /* --- پس‌زمینه کره زمین ۳ بعدی --- */
+    #globeViz {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: all;
+    }
+
+    /* کانتینر اصلی محتوا جهت قرارگیری روی کره زمین */
+    .app-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none; /* اجازه چرخاندن کره زمین در فضاهای خالی */
+    }
+
+    .interactive-element {
+      pointer-events: auto; /* فعال کردن کلیک روی دکمه‌ها و ورودی‌ها */
     }
 
     /* --- ۴ دکمه بالا سمت راست --- */
@@ -32,6 +65,12 @@
       gap: 12px;
       direction: ltr;
       z-index: 9999;
+      background: rgba(18, 22, 31, 0.6);
+      backdrop-filter: blur(8px);
+      padding: 6px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      pointer-events: auto;
     }
 
     .btn-lightning {
@@ -44,7 +83,7 @@
       justify-content: center;
       text-decoration: none;
     }
-    .btn-lightning svg { width: 18px; height: 18px; fill: #0d1322; }
+    .btn-lightning svg { width: 18px; height: 18px; fill: #0b0e14; }
 
     .btn-mempool {
       width: 36px;
@@ -81,27 +120,27 @@
       justify-content: center;
       gap: 15px;
       width: 100%;
-      max-width: 1100px;
-      margin-top: 40px;
+      margin-top: 30px;
       margin-bottom: 25px;
     }
 
     .stat-card {
-      background: rgba(30, 41, 69, 0.4);
+      background: rgba(18, 22, 31, 0.65);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
-      padding: 15px 25px;
+      padding: 15px 20px;
       text-align: center;
       flex: 1;
     }
 
     .stat-value {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       color: #38bdf8;
     }
 
-    /* --- باکس سرچ --- */
+    /* --- نوار سرچ --- */
     .search-wrapper {
       width: 100%;
       max-width: 650px;
@@ -111,7 +150,9 @@
     .search-box {
       display: flex;
       align-items: center;
-      background: #2b3b64;
+      background: rgba(43, 59, 100, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 30px;
       padding: 5px 8px 5px 20px;
     }
@@ -145,18 +186,18 @@
       fill: #fff;
     }
 
-    /* --- گرید کارت‌های اطلاعاتی --- */
+    /* --- کارت‌های اطلاعاتی --- */
     .info-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 15px;
       width: 100%;
-      max-width: 1100px;
     }
 
     .info-card {
-      background: rgba(30, 41, 69, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(18, 22, 31, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       padding: 16px;
       text-align: center;
@@ -174,11 +215,15 @@
       font-size: 14px;
       font-weight: 600;
       color: #38bdf8;
+      min-height: 20px;
       word-break: break-all;
     }
   </style>
 </head>
 <body>
+
+  <!-- کره زمین و آسمان ۳ بعدی -->
+  <div id="globeViz"></div>
 
   <!-- ۴ دکمه بالا سمت راست -->
   <div class="top-right-bar">
@@ -192,68 +237,84 @@
     <a href="https://amboss.space" target="_blank" class="btn-amboss" title="Amboss Space">Amboss</a>
   </div>
 
-  <!-- آمار بالایی -->
-  <div class="top-stats">
-    <div class="stat-card"><div class="stat-value" id="stat1">-</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat2">-</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat3">-</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat4">-</div></div>
-    <div class="stat-card"><div class="stat-value" id="stat5">-</div></div>
-  </div>
-
-  <!-- نوار سرچ (ابتدا خالی) -->
-  <div class="search-wrapper">
-    <div class="search-box">
-      <input type="text" id="searchInput" class="search-input" placeholder="Enter ID..." onkeypress="handleKeyPress(event)">
-      <button class="search-btn" onclick="executeSearch()">
-        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- شبکه کارت‌های اطلاعات متغیر -->
-  <div class="info-grid">
-    <div class="info-card">
-      <div class="info-title">ON/OFF</div>
-      <div class="info-value" id="val-onoff">-</div>
-    </div>
-    <div class="info-card">
-      <div class="info-title">WALLET ADDRESS</div>
-      <div class="info-value" id="val-wallet">-</div>
-    </div>
-    <div class="info-card">
-      <div class="info-title">STATUS TX</div>
-      <div class="info-value" id="val-status">-</div>
+  <div class="app-container">
+    <!-- آمار بالای صفحه -->
+    <div class="top-stats interactive-element">
+      <div class="stat-card"><div class="stat-value" id="stat1">-</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat2">-</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat3">-</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat4">-</div></div>
+      <div class="stat-card"><div class="stat-value" id="stat5">-</div></div>
     </div>
 
-    <div class="info-card">
-      <div class="info-title">COIN</div>
-      <div class="info-value" id="val-coin">-</div>
-    </div>
-    <div class="info-card">
-      <div class="info-title">FEE</div>
-      <div class="info-value" id="val-fee">-</div>
-    </div>
-    <div class="info-card">
-      <div class="info-title">ACTIVE CHANNEL</div>
-      <div class="info-value" id="val-active-channel">-</div>
+    <!-- نوار سرچ -->
+    <div class="search-wrapper interactive-element">
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="Enter ID..." onkeypress="handleKeyPress(event)">
+        <button class="search-btn" onclick="executeSearch()">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </button>
+      </div>
     </div>
 
-    <div class="info-card">
-      <div class="info-title">IP ADDRESS</div>
-      <div class="info-value" id="val-ip">-</div>
-    </div>
-    <div class="info-card">
-      <div class="info-title">MODE</div>
-      <div class="info-value" id="val-mode">-</div>
-    </div>
-    <div class="info-card">
-      <div class="info-title">CHANNEL TYPE</div>
-      <div class="info-value" id="val-channel-type">-</div>
+    <!-- گرید کارت‌های اطلاعات -->
+    <div class="info-grid interactive-element">
+      <div class="info-card">
+        <div class="info-title">ON/OFF</div>
+        <div class="info-value" id="val-onoff">-</div>
+      </div>
+      <!-- کارت WALLET ADDRESS همیشه خالی می‌ماند -->
+      <div class="info-card">
+        <div class="info-title">WALLET ADDRESS</div>
+        <div class="info-value" id="val-wallet"></div>
+      </div>
+      <div class="info-card">
+        <div class="info-title">STATUS TX</div>
+        <div class="info-value" id="val-status">-</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-title">COIN</div>
+        <div class="info-value" id="val-coin">-</div>
+      </div>
+      <div class="info-card">
+        <div class="info-title">FEE</div>
+        <div class="info-value" id="val-fee">-</div>
+      </div>
+      <div class="info-card">
+        <div class="info-title">ACTIVE CHANNEL</div>
+        <div class="info-value" id="val-active-channel">-</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-title">IP ADDRESS</div>
+        <div class="info-value" id="val-ip">-</div>
+      </div>
+      <div class="info-card">
+        <div class="info-title">MODE</div>
+        <div class="info-value" id="val-mode">-</div>
+      </div>
+      <div class="info-card">
+        <div class="info-title">CHANNEL TYPE</div>
+        <div class="info-value" id="val-channel-type">-</div>
+      </div>
     </div>
   </div>
 
   <script>
+    // ۱. راه‌اندازی پس‌زمینه کره زمین سه‌بعدی و آسمان شب
+    const world = Globe()
+      (document.getElementById('globeViz'))
+      .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+      .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+      .showAtmosphere(true)
+      .atmosphereColor('#38bdf8')
+      .atmosphereAltitude(0.2);
+
+    world.controls().autoRotate = true;
+    world.controls().autoRotateSpeed = 0.5;
+
+    // ۲. مدیریت کلیک سرچ و نمایش اطلاعات
     function handleKeyPress(e) {
       if (e.key === 'Enter') {
         executeSearch();
@@ -264,16 +325,19 @@
       const inputVal = document.getElementById('searchInput').value.trim();
       if (!inputVal) return;
 
-      // نمایش آمار بالای صفحه
+      // اعداد آمار بالا
       document.getElementById('stat1').innerText = "012";
       document.getElementById('stat2').innerText = "19,927";
       document.getElementById('stat3').innerText = "2,632.4 BTC";
       document.getElementById('stat4').innerText = "12";
       document.getElementById('stat5').innerText = "28";
 
-      // پر کردن کارت‌های متغیر بر اساس جستجو
+      // داده‌های کارت‌ها
       document.getElementById('val-onoff').innerText = "Online";
-      document.getElementById('val-wallet').innerText = "GyUkZPmeTClYPgTJHL1AEiHsfee9934zpA3wfL2fkbYQ";
+      
+      // آدرس ولت طبق درخواست شما پس از سرچ هم خالی نگه داشته می‌شود
+      document.getElementById('val-wallet').innerText = ""; 
+
       document.getElementById('val-status').innerText = "Pending ⓘ";
       document.getElementById('val-coin').innerText = "SOL";
       document.getElementById('val-fee').innerText = "15 SAT/VB";
@@ -281,7 +345,7 @@
       document.getElementById('val-ip').innerText = "🇹🇯 5.117.240.152";
       document.getElementById('val-mode').innerText = "CPU";
       
-      // محدودیتی که خواسته بودید: کانال بیشتر از ۶ تا نباشد
+      // محدودیت حداکثر ۶ کانال
       document.getElementById('val-channel-type').innerText = "6 Channel";
     }
   </script>
