@@ -36,7 +36,6 @@
         .controls-row { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; font-size: 12px; flex-wrap: wrap; }
         .control-item { display: flex; align-items: center; gap: 5px; }
         
-        /* Coin Select with Icons */
         .coin-select-wrapper { display: flex; align-items: center; background-color: #3d3d3d; border: 1px solid #555; border-radius: 4px; padding: 2px 6px; }
         .coin-icon { width: 16px; height: 16px; margin-right: 4px; vertical-align: middle; }
         select { background-color: transparent; color: white; border: none; font-size: 12px; outline: none; cursor: pointer; }
@@ -45,8 +44,8 @@
         .wallet-box { flex: 1; background-color: #3d3d3d; border: 1px solid #555; padding: 6px 10px; border-radius: 4px; font-family: monospace; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
         /* Interactive Toggle Button */
-        .btn-toggle { width: 100%; padding: 14px; background-color: #d32f2f; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; margin-bottom: 15px; cursor: pointer; transition: background-color 0.3s; }
-        .btn-toggle.running { background-color: #2e7d32; }
+        .btn-toggle { width: 100%; padding: 14px; background-color: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; margin-bottom: 15px; cursor: pointer; transition: background-color 0.3s; }
+        .btn-toggle.stopped { background-color: #d32f2f; }
 
         .channels-title { font-size: 11px; color: #aaa; margin-bottom: 8px; }
         .channels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; margin-bottom: 15px; }
@@ -56,10 +55,14 @@
         .rent-header { font-size: 15px; font-weight: bold; margin-bottom: 10px; }
         .network-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; }
         
+        .swap-toggle { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; }
+        .swap-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #81c784; display: inline-block; transition: background-color 0.2s; }
+        .swap-dot.off { background-color: #555; }
+
         .progress-section { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
         .progress-bar-container { flex: 1; }
         .progress-bar { display: flex; gap: 4px; }
-        .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; transition: background-color 0.3s ease; }
+        .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; }
         .progress-cell.active { background-color: #81c784; }
         .days-counter { font-size: 11px; color: #aaa; text-align: right; margin-top: 4px; }
 
@@ -75,6 +78,7 @@
         .footer { display: flex; justify-content: space-between; align-items: center; background-color: #242424; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
         .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
         .footer-icon { width: 20px; height: 20px; background-color: #ab47bc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+        .footer-user { font-weight: bold; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
@@ -151,7 +155,7 @@
                 <div class="wallet-box" id="disp-wallet">...</div>
             </div>
 
-            <button class="btn-toggle" id="action-btn" onclick="toggleNode()">STOP</button>
+            <button class="btn-toggle" id="action-btn" onclick="toggleNode()">START</button>
 
             <div class="channels-title">Open Channel</div>
             <div class="channels-grid">
@@ -166,7 +170,10 @@
             <div class="rent-header">Rent Time in Block (4.0 ph/s)</div>
             <div class="network-row">
                 <span id="net-label">Network: SOL</span>
-                <span>Satoshi SWAP 🔘</span>
+                <div class="swap-toggle" onclick="toggleSwap()">
+                    <span>Satoshi SWAP</span>
+                    <span class="swap-dot" id="swap-dot"></span>
+                </div>
             </div>
 
             <div class="progress-section">
@@ -182,15 +189,15 @@
                         <div class="progress-cell"></div>
                         <div class="progress-cell"></div>
                     </div>
-                    <div class="days-counter" id="days-counter">6 / 9 days</div>
+                    <div class="days-counter">6 / 9 days</div>
                 </div>
                 <div class="dashed-block" id="top-dashed-block">
                     0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
                 </div>
             </div>
 
-            <div class="fee-info">Tax fee: ~16/20 SAT/VB</div>
-            <div class="fee-info">High Priority: 25 SAT/VB</div>
+            <div class="fee-info">Tax fee: ~<span id="tax-fee">16/20</span> SAT/VB</div>
+            <div class="fee-info">High Priority: <span id="high-priority">25</span> SAT/VB</div>
 
             <div class="blocks-row" id="blocks-container">
                 <div class="block-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
@@ -205,7 +212,7 @@
                     <div class="footer-icon">⚡</div>
                     <span>Lightning Node</span>
                 </div>
-                <div>:<span id="disp-username">Username</span> :Username</div>
+                <div class="footer-user"><span id="disp-username">8225851045</span> :Username</div>
             </div>
         </div>
     </div>
@@ -213,7 +220,8 @@
 
 <script>
     let isRunning = true;
-    let timer1, timer2;
+    let swapActive = true;
+    let timer1;
 
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
@@ -265,17 +273,32 @@
 
     function toggleNode() {
         const btn = document.getElementById('action-btn');
+        const cards = document.querySelectorAll('.block-card');
+        const topBlock = document.getElementById('top-dashed-block');
         isRunning = !isRunning;
 
         if (isRunning) {
-            btn.innerText = 'STOP';
-            btn.classList.remove('running');
+            btn.innerText = 'START';
+            btn.classList.remove('stopped');
             startLiveAnimation();
         } else {
-            btn.innerText = 'START';
-            btn.classList.add('running');
+            btn.innerText = 'STOP';
+            btn.classList.add('stopped');
             clearInterval(timer1);
-            clearInterval(timer2);
+            
+            // خاموش کردن کامل کارت‌ها و ولیدیتورها هنگام STOP
+            cards.forEach(card => card.classList.add('empty'));
+            topBlock.classList.remove('active');
+        }
+    }
+
+    function toggleSwap() {
+        swapActive = !swapActive;
+        const dot = document.getElementById('swap-dot');
+        if (swapActive) {
+            dot.classList.remove('off');
+        } else {
+            dot.classList.add('off');
         }
     }
 
@@ -291,14 +314,15 @@
 
     function startLiveAnimation() {
         clearInterval(timer1);
-        clearInterval(timer2);
 
         timer1 = setInterval(() => {
             if (!isRunning) return;
+
+            // بروزرسانی کارت‌ها
             const cards = document.querySelectorAll('.block-card');
             const topBlock = document.getElementById('top-dashed-block');
-            
             let emptyCardIndex = Math.floor(Math.random() * cards.length);
+            
             cards.forEach((card, idx) => {
                 if (idx === emptyCardIndex) {
                     card.classList.add('empty');
@@ -309,29 +333,21 @@
                 }
             });
 
-            const activeCardsCount = document.querySelectorAll('.block-card:not(.empty)').length;
-            if (activeCardsCount >= 4) {
+            if (document.querySelectorAll('.block-card:not(.empty)').length >= 4) {
                 topBlock.classList.add('active');
                 document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
             } else {
                 topBlock.classList.remove('active');
             }
-        }, 1500);
 
-        timer2 = setInterval(() => {
-            if (!isRunning) return;
-            const cells = document.querySelectorAll('.progress-cell');
-            const activeCount = Math.floor(Math.random() * 4) + 5;
-            cells.forEach((cell, index) => {
-                if (index < activeCount) {
-                    cell.classList.add('active');
-                } else {
-                    cell.classList.remove('active');
-                }
-            });
-            document.getElementById('days-counter').innerText = activeCount + ' / 9 days';
-        }, 2200);
+            // تغییرات لحظه‌ای و زنده کارمزدها (Tax fee & High Priority)
+            let lowTax = Math.floor(Math.random() * 5 + 12);
+            let highTax = lowTax + Math.floor(Math.random() * 6 + 4);
+            document.getElementById('tax-fee').innerText = `${lowTax}/${highTax}`;
+            document.getElementById('high-priority').innerText = Math.floor(Math.random() * 8 + 22);
+
+        }, 1500);
     }
 </script>
 
