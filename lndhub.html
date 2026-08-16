@@ -1,514 +1,130 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LNDHUB - Lightning Node Manager</title>
-    <!-- Three.js & OrbitControls -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Links Header</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            background-color: #030712;
-            color: #ffffff;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+    body {
+      background-color: #12161f; /* پس‌زمینه تیره مطابق تصویر */
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+    }
 
-        #globe-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            cursor: grab;
-            touch-action: none;
-        }
+    /* کانتینر اصلی در بالا سمت راست */
+    .top-right-bar {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      direction: ltr; /* چیدمان عناصر از چپ به راست */
+      z-index: 9999;
+    }
 
-        #globe-container:active {
-            cursor: grabbing;
-        }
+    /* ۱. دکمه دایره‌ای Lightning */
+    .btn-lightning {
+      width: 42px;
+      height: 42px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: transform 0.2s, opacity 0.2s;
+    }
 
-        .content-layer {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            pointer-events: none;
-        }
+    .btn-lightning svg {
+      width: 22px;
+      height: 22px;
+      fill: #12161f;
+    }
 
-        .interactive {
-            pointer-events: auto;
-        }
+    /* ۲. دکمه مربعی Mempool (گرادینت آبی) */
+    .btn-mempool {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #1e3a8a, #0284c7, #38bdf8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: transform 0.2s, opacity 0.2s;
+    }
 
-        .header {
-            width: 100%;
-            max-width: 1100px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            margin-bottom: 15px;
-        }
+    .btn-mempool svg {
+      width: 24px;
+      height: 24px;
+      fill: #ffffff;
+    }
 
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: 800;
-        }
+    /* ۳. دکمه 1ML */
+    .btn-1ml {
+      background-color: #0070f3;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: transform 0.2s, opacity 0.2s;
+    }
 
-        .lightning-icon {
-            color: #3b82f6;
-            font-size: 22px;
-            filter: drop-shadow(0 0 10px #2563eb);
-        }
+    /* ۴. دکمه متنی Amboss */
+    .btn-amboss {
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 18px;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+      transition: opacity 0.2s;
+    }
 
-        .nav-icons {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .nav-btn {
-            width: 36px;
-            height: 36px;
-            background-color: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            backdrop-filter: blur(8px);
-        }
-
-        .nav-link-badge {
-            background-color: #2563eb;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 12px;
-            padding: 6px 14px;
-            border-radius: 6px;
-            text-decoration: none;
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.6);
-        }
-
-        /* Top Bar Stats */
-        .stats-container {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
-            max-width: 1100px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            backdrop-filter: blur(12px);
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-            flex: 1;
-            min-width: 140px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
-
-        .stat-card.large {
-            flex: 1.4;
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .stat-card.large .stat-value {
-            color: #38bdf8;
-            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
-        }
-
-        /* Search Input Bar */
-        .search-container {
-            width: 100%;
-            max-width: 580px;
-            position: relative;
-            margin-bottom: 25px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 14px 24px;
-            padding-right: 65px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid rgba(56, 189, 248, 0.45);
-            backdrop-filter: blur(10px);
-            border-radius: 40px;
-            color: #ffffff;
-            font-size: 18px;
-            font-weight: 600;
-            outline: none;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 6px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, #38bdf8, #2563eb);
-            border: none;
-            border-radius: 50%;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 18px;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
-        }
-
-        /* Result Cards Grid */
-        .results-grid {
-            display: none;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 1100px;
-            margin-bottom: 30px;
-            opacity: 0;
-            transform: translateY(15px);
-            transition: all 0.4s ease;
-        }
-
-        .results-grid.visible {
-            display: grid;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .node-card {
-            background: rgba(30, 58, 138, 0.45);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            backdrop-filter: blur(14px);
-            border-radius: 12px;
-            padding: 16px 12px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        }
-
-        .node-card-title {
-            font-size: 13px;
-            font-weight: 800;
-            color: #cbd5e1;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .node-card-value {
-            font-size: 15px;
-            font-weight: 700;
-            color: #38bdf8;
-            word-break: break-all;
-            min-height: 22px;
-        }
-
-        .node-card-value.online {
-            color: #38bdf8;
-        }
-
-        .footer {
-            margin-top: auto;
-            padding: 15px;
-            font-size: 12px;
-            color: #64748b;
-            text-align: center;
-            width: 100%;
-        }
-
-        @media (max-width: 768px) {
-            .results-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    /* افکت هوور (Hover) برای همه دکمه‌ها */
+    .top-right-bar a:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+  </style>
 </head>
 <body>
 
-    <div id="globe-container"></div>
+  <!-- مجموعه دکمه‌های بالا سمت راست -->
+  <div class="top-right-bar">
+    <!-- ۱. Lightning Engineering (چپ‌ترین) -->
+    <a href="https://lightning.engineering" target="_blank" class="btn-lightning" title="Lightning Engineering">
+      <svg viewBox="0 0 24 24">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+      </svg>
+    </a>
 
-    <div class="content-layer">
-        <div class="header interactive">
-            <div class="brand-logo">
-                <span class="lightning-icon">⚡</span>
-                <span>LNDHUB</span>
-            </div>
-            <div class="nav-icons">
-                <div class="nav-btn">⚡</div>
-                <div class="nav-btn">🌐</div>
-                <a href="#" class="nav-link-badge">1ML</a>
-                <span style="color: #94a3b8; font-size: 14px;">Amboss</span>
-            </div>
-        </div>
+    <!-- ۲. Mempool.space -->
+    <a href="https://mempool.space" target="_blank" class="btn-mempool" title="Mempool.space">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H7v-4h4v4zm0-6H7V7h4v4zm6 6h-4v-4h4v4zm0-6h-4V7h4v4z"/>
+      </svg>
+    </a>
 
-        <!-- Top Overview Bar -->
-        <div class="stats-container interactive">
-            <div class="stat-card">
-                <div class="stat-value">6,012</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">19,927</div>
-            </div>
-            <div class="stat-card large">
-                <div class="stat-value">2,632.4 BTC</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">12</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">281</div>
-            </div>
-        </div>
+    <!-- ۳. 1ML -->
+    <a href="https://1ml.com" target="_blank" class="btn-1ml" title="1ML">
+      1ML
+    </a>
 
-        <!-- Search Bar -->
-        <div class="search-container interactive">
-            <input type="text" id="nodeSearchInput" class="search-input" placeholder="Search Node ...">
-            <button id="searchBtn" class="search-btn">🔍</button>
-        </div>
+    <!-- ۴. Amboss.space (راست‌ترین) -->
+    <a href="https://amboss.space" target="_blank" class="btn-amboss" title="Amboss Space">
+      Amboss
+    </a>
+  </div>
 
-        <!-- Result Grid -->
-        <div id="resultsGrid" class="results-grid interactive">
-            <div class="node-card">
-                <div class="node-card-title">ON/OFF</div>
-                <div class="node-card-value online" id="val-status"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">WALLET ADDRESS</div>
-                <div class="node-card-value" id="val-wallet"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">STATUS TX</div>
-                <div class="node-card-value" id="val-tx"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">COIN</div>
-                <div class="node-card-value" id="val-coin"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">FEE</div>
-                <div class="node-card-value" id="val-fee"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">ACTIVE CHANNEL</div>
-                <div class="node-card-value" id="val-channel"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">IP ADDRESS</div>
-                <div class="node-card-value" id="val-ip">Detecting...</div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">MODE</div>
-                <div class="node-card-value" id="val-mode"></div>
-            </div>
-            <div class="node-card">
-                <div class="node-card-title">CHANNEL TYPE</div>
-                <div class="node-card-value" id="val-channeltype"></div>
-            </div>
-        </div>
-
-        <footer class="footer interactive">
-            &copy; 2026 LNDHUB. All Rights Reserved.
-        </footer>
-    </div>
-
-    <!-- 3D Globe & Dynamic Data Logic -->
-    <script>
-        // --- 3D Background Globe ---
-        const container = document.getElementById('globe-container');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, -40, 190);
-
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        container.appendChild(renderer.domElement);
-
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        
-        // Enabling Zooming for Mobile & Desktop
-        controls.enableZoom = true;
-        controls.minDistance = 100;
-        controls.maxDistance = 350;
-        controls.zoomSpeed = 0.8;
-
-        const radius = 70;
-        const globeGroup = new THREE.Group();
-        globeGroup.position.y = -35;
-        scene.add(globeGroup);
-
-        const loader = new THREE.TextureLoader();
-        loader.crossOrigin = '';
-        loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg', function (texture) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = 1024;
-            canvas.height = 512;
-            ctx.drawImage(texture.image, 0, 0, 1024, 512);
-            const imgData = ctx.getImageData(0, 0, 1024, 512);
-
-            const positions = [];
-            const totalPoints = 25000;
-
-            for (let i = 0; i < totalPoints; i++) {
-                const phi = Math.acos(-1 + (2 * i) / totalPoints);
-                const theta = Math.sqrt(totalPoints * Math.PI) * phi;
-
-                const u = (theta / (2 * Math.PI)) % 1;
-                const v = phi / Math.PI;
-
-                const xImg = Math.floor(u * 1024);
-                const yImg = Math.floor(v * 512);
-                const index = (yImg * 1024 + xImg) * 4;
-
-                if (imgData.data[index] > 40) {
-                    const x = radius * Math.cos(theta) * Math.sin(phi);
-                    const y = radius * Math.sin(theta) * Math.sin(phi);
-                    const z = radius * Math.cos(phi);
-                    positions.push(x, y, z);
-                }
-            }
-
-            const dotsGeometry = new THREE.BufferGeometry();
-            dotsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-
-            const dotsMaterial = new THREE.PointsMaterial({
-                color: 0x90caf9,
-                size: 1.1,
-                transparent: true,
-                opacity: 0.9
-            });
-
-            const dotsMesh = new THREE.Points(dotsGeometry, dotsMaterial);
-            globeGroup.add(dotsMesh);
-        });
-
-        const glowGeo = new THREE.RingGeometry(radius + 2, radius + 22, 64);
-        const glowMat = new THREE.MeshBasicMaterial({
-            color: 0x1e88e5,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.35
-        });
-        const glowRing = new THREE.Mesh(glowGeo, glowMat);
-        globeGroup.add(glowRing);
-
-        function animate() {
-            requestAnimationFrame(animate);
-            globeGroup.rotation.y += 0.0015;
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // --- Fetch User IP & Country Flag ---
-        let userIpInfo = { ip: "Detecting...", flag: "🌐" };
-
-        function getCountryFlagEmoji(countryCode) {
-            if (!countryCode) return "🌐";
-            return countryCode
-                .toUpperCase()
-                .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
-        }
-
-        fetch('https://ipapi.co/json/')
-            .then(res => res.json())
-            .then(data => {
-                if(data.ip) {
-                    userIpInfo.ip = data.ip;
-                    userIpInfo.flag = getCountryFlagEmoji(data.country_code);
-                }
-            })
-            .catch(() => {
-                userIpInfo.ip = "89.34.60.127";
-                userIpInfo.flag = "🇦🇿";
-            });
-
-        // --- Dynamic Search Logic ---
-        const searchInput = document.getElementById('nodeSearchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const resultsGrid = document.getElementById('resultsGrid');
-
-        function generateVariableData(query) {
-            if (!query.trim()) return;
-
-            let hash = 0;
-            for (let i = 0; i < query.length; i++) {
-                hash = query.charCodeAt(i) + ((hash << 5) - hash);
-            }
-
-            const coins = ['SOL', 'BTC', 'ETH', 'USDT', 'LNC'];
-            const modes = ['CPU', 'GPU', 'HYBRID', 'NODE-V2'];
-            
-            const randomCoin = coins[Math.abs(hash) % coins.length];
-            const randomMode = modes[Math.abs(hash) % modes.length];
-            
-            const randomFee = (Math.abs(hash % 30) + 5);
-            
-            // Days constrained between 1 and 7
-            const randomDays = (Math.abs(hash % 7) + 1); 
-            const randomHours = (Math.abs(hash % 24));
-
-            document.getElementById('val-status').innerText = "Online";
-            document.getElementById('val-wallet').innerText = ""; 
-            document.getElementById('val-tx').innerText = `${randomDays}d ${randomHours}h ${Math.abs(hash % 59)}m`;
-            document.getElementById('val-coin').innerText = randomCoin;
-            document.getElementById('val-fee').innerText = `${randomFee} SAT/VB`;
-            document.getElementById('val-channel').innerText = "Must Be Update Client";
-            document.getElementById('val-ip').innerText = `${userIpInfo.flag} ${userIpInfo.ip}`;
-            document.getElementById('val-mode').innerText = randomMode;
-            document.getElementById('val-channeltype').innerText = "6 Channel"; 
-
-            resultsGrid.classList.add('visible');
-        }
-
-        searchBtn.addEventListener('click', () => {
-            generateVariableData(searchInput.value);
-        });
-
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                generateVariableData(searchInput.value);
-            }
-        });
-    </script>
 </body>
 </html>
