@@ -43,14 +43,16 @@
 
         .wallet-box { flex: 1; background-color: #3d3d3d; border: 1px solid #555; padding: 6px 10px; border-radius: 4px; font-family: monospace; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        /* Interactive Toggle Button */
+        /* START / STOP Toggle Button */
         .btn-toggle { width: 100%; padding: 14px; background-color: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; margin-bottom: 15px; cursor: pointer; transition: background-color 0.3s; }
         .btn-toggle.stopped { background-color: #d32f2f; }
 
         .channels-title { font-size: 11px; color: #aaa; margin-bottom: 8px; }
         .channels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; margin-bottom: 15px; }
-        .channel-item { display: flex; align-items: center; gap: 6px; }
+        .channel-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
         .channel-item span { color: #81c784; font-weight: bold; }
+        .channel-item.off span { color: #555; }
+        .channel-item.off { color: #777; }
 
         .rent-header { font-size: 15px; font-weight: bold; margin-bottom: 10px; }
         .network-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; }
@@ -60,11 +62,11 @@
         .swap-dot.off { background-color: #555; }
 
         .progress-section { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
-        .progress-bar-container { flex: 1; }
-        .progress-bar { display: flex; gap: 4px; }
+        .progress-bar-container { flex: 1; display: flex; align-items: center; gap: 8px; }
+        .progress-bar { display: flex; gap: 4px; flex: 1; }
         .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; }
         .progress-cell.active { background-color: #81c784; }
-        .days-counter { font-size: 11px; color: #aaa; text-align: right; margin-top: 4px; }
+        .days-counter { font-size: 11px; color: #aaa; white-space: nowrap; }
 
         .dashed-block { border: 2px dashed #81c784; background-color: rgba(129, 199, 132, 0.15); color: #81c784; padding: 4px 8px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 75px; opacity: 0.3; transition: all 0.3s ease; }
         .dashed-block.active { opacity: 1; background-color: #81c784; color: #000; border-style: solid; }
@@ -159,15 +161,15 @@
 
             <div class="channels-title">Open Channel</div>
             <div class="channels-grid">
-                <div class="channel-item"><span>✓</span> BTC Pay Server</div>
-                <div class="channel-item"><span>✓</span> WX Network</div>
-                <div class="channel-item"><span>✓</span> Wallet of Satoshi</div>
-                <div class="channel-item"><span>✓</span> Tippin.Me</div>
-                <div class="channel-item"><span>✓</span> Open Node</div>
-                <div class="channel-item"><span>✓</span> Acinq.1ML.com</div>
+                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> BTC Pay Server</div>
+                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> WX Network</div>
+                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Wallet of Satoshi</div>
+                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Tippin.Me</div>
+                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Open Node</div>
+                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Acinq.1ML.com</div>
             </div>
 
-            <div class="rent-header">Rent Time in Block (4.0 ph/s)</div>
+            <div class="rent-header">Rent Time in Block (<span id="rent-power">4.0</span> ph/s)</div>
             <div class="network-row">
                 <span id="net-label">Network: SOL</span>
                 <div class="swap-toggle" onclick="toggleSwap()">
@@ -200,11 +202,11 @@
             <div class="fee-info">High Priority: <span id="high-priority">25</span> SAT/VB</div>
 
             <div class="blocks-row" id="blocks-container">
-                <div class="block-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card empty">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card empty">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card empty">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card empty">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card empty">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
             </div>
 
             <div class="footer">
@@ -219,9 +221,10 @@
 </div>
 
 <script>
-    let isRunning = true;
+    let isRunning = false;
     let swapActive = true;
     let timer1;
+    let fillIndex = 0;
 
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
@@ -266,8 +269,6 @@
             
             document.getElementById('disp-wallet').innerText = wa;
             document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
-
-            startLiveAnimation();
         }, 1200);
     }
 
@@ -275,21 +276,27 @@
         const btn = document.getElementById('action-btn');
         const cards = document.querySelectorAll('.block-card');
         const topBlock = document.getElementById('top-dashed-block');
+        
         isRunning = !isRunning;
 
         if (isRunning) {
-            btn.innerText = 'START';
-            btn.classList.remove('stopped');
-            startLiveAnimation();
-        } else {
             btn.innerText = 'STOP';
             btn.classList.add('stopped');
+            fillIndex = 0;
+            startSequentialAnimation();
+        } else {
+            btn.innerText = 'START';
+            btn.classList.remove('stopped');
             clearInterval(timer1);
             
-            // خاموش کردن کامل کارت‌ها و ولیدیتورها هنگام STOP
+            // خاموش کردن کامل کارت‌ها
             cards.forEach(card => card.classList.add('empty'));
             topBlock.classList.remove('active');
         }
+    }
+
+    function toggleChannel(element) {
+        element.classList.toggle('off');
     }
 
     function toggleSwap() {
@@ -312,42 +319,47 @@
         document.getElementById('net-label').innerText = 'Network: ' + coinVal;
     }
 
-    function startLiveAnimation() {
+    function startSequentialAnimation() {
         clearInterval(timer1);
 
         timer1 = setInterval(() => {
             if (!isRunning) return;
 
-            // بروزرسانی کارت‌ها
             const cards = document.querySelectorAll('.block-card');
             const topBlock = document.getElementById('top-dashed-block');
-            let emptyCardIndex = Math.floor(Math.random() * cards.length);
-            
-            cards.forEach((card, idx) => {
-                if (idx === emptyCardIndex) {
-                    card.classList.add('empty');
-                } else {
-                    card.classList.remove('empty');
-                    card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
-                    card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
-                }
-            });
 
-            if (document.querySelectorAll('.block-card:not(.empty)').length >= 4) {
+            // پر شدن منظم ولیدیتورها از چپ به راست
+            if (fillIndex < cards.length) {
+                let currentCard = cards[fillIndex];
+                currentCard.classList.remove('empty');
+                currentCard.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                currentCard.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                fillIndex++;
+            } else if (fillIndex === cards.length) {
                 topBlock.classList.add('active');
                 document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                fillIndex++;
             } else {
-                topBlock.classList.remove('active');
+                // به‌روزرسانی زنده اطلاعات کارت‌ها پس از پر شدن
+                cards.forEach(card => {
+                    card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                    card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                });
+                document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
             }
 
-            // تغییرات لحظه‌ای و زنده کارمزدها (Tax fee & High Priority)
+            // متغیر شدن Rent Time in Block (قدرت ph/s)
+            document.getElementById('rent-power').innerText = (Math.random() * 1.2 + 3.5).toFixed(1);
+
+            // تغییرات زنده کارمزدها
             let lowTax = Math.floor(Math.random() * 5 + 12);
             let highTax = lowTax + Math.floor(Math.random() * 6 + 4);
             document.getElementById('tax-fee').innerText = `${lowTax}/${highTax}`;
             document.getElementById('high-priority').innerText = Math.floor(Math.random() * 8 + 22);
 
-        }, 1500);
+        }, 1200);
     }
 </script>
 
