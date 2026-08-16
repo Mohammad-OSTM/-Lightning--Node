@@ -46,12 +46,14 @@
         .network-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; }
         
         .progress-bar { display: flex; gap: 4px; margin-bottom: 12px; }
-        .progress-cell { flex: 1; height: 20px; background-color: #81c784; border-radius: 2px; }
-        .progress-cell.empty { background-color: #e0e0e0; }
+        .progress-cell { flex: 1; height: 20px; background-color: #e0e0e0; border-radius: 2px; transition: background-color 0.3s ease; }
+        .progress-cell.active { background-color: #81c784; }
 
         .fee-info { font-size: 12px; margin-bottom: 4px; color: #ddd; }
+        
         .blocks-row { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
-        .block-card { background-color: #81c784; color: #000; padding: 6px; border-radius: 4px; font-size: 9px; text-align: center; min-width: 65px; border: 1px dashed #2e7d32; }
+        .block-card { background-color: #81c784; color: #000; padding: 6px; border-radius: 4px; font-size: 9px; text-align: center; min-width: 65px; border: 1px dashed #2e7d32; transition: all 0.4s ease; opacity: 1; }
+        .block-card.empty { background-color: transparent; border: 1px dashed #666; color: transparent; opacity: 0.2; }
 
         .footer { display: flex; justify-content: space-between; align-items: center; background-color: #242424; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
         .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
@@ -132,18 +134,25 @@
             </div>
 
             <div class="progress-bar">
-                <div class="progress-cell"></div><div class="progress-cell"></div><div class="progress-cell"></div><div class="progress-cell"></div><div class="progress-cell"></div><div class="progress-cell"></div><div class="progress-cell empty"></div><div class="progress-cell empty"></div>
+                <div class="progress-cell active"></div>
+                <div class="progress-cell active"></div>
+                <div class="progress-cell active"></div>
+                <div class="progress-cell active"></div>
+                <div class="progress-cell active"></div>
+                <div class="progress-cell active"></div>
+                <div class="progress-cell"></div>
+                <div class="progress-cell"></div>
             </div>
 
             <div class="fee-info">Tax fee: ~16/20 SAT/VB</div>
             <div class="fee-info">High Priority: 25 SAT/VB</div>
 
-            <div class="blocks-row">
-                <div class="block-card">0-14 Sat/VB<br>1.12 MB<br>2,354 Transaction</div>
-                <div class="block-card">0-12 Sat/VB<br>1.75 MB<br>2,610 Transaction</div>
-                <div class="block-card">0-12 Sat/VB<br>2.40 MB<br>3,144 Transaction</div>
-                <div class="block-card">0-12 Sat/VB<br>1.90 MB<br>3,008 Transaction</div>
-                <div class="block-card">7-15 Sat/VB<br>1.65 MB<br>1,620 Transaction</div>
+            <div class="blocks-row" id="blocks-container">
+                <div class="block-card">0-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction</div>
+                <div class="block-card">0-12 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction</div>
+                <div class="block-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction</div>
+                <div class="block-card">0-12 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction</div>
+                <div class="block-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction</div>
             </div>
 
             <div class="footer">
@@ -164,6 +173,39 @@
         document.getElementById('header-title').innerText = 'Lightning Node';
         var wa = document.getElementById('wa').value;
         if(wa) document.getElementById('disp-wallet').innerText = wa;
+        
+        startLiveAnimation();
+    }
+
+    function startLiveAnimation() {
+        // انیمیشن پر و خالی شدن باکس‌های سبز کارمزد
+        setInterval(() => {
+            const cards = document.querySelectorAll('.block-card');
+            const randomIndex = Math.floor(Math.random() * cards.length);
+            const card = cards[randomIndex];
+
+            card.classList.toggle('empty');
+
+            if (!card.classList.contains('empty')) {
+                const mb = (Math.random() * 1.8 + 0.8).toFixed(2);
+                const tx = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                card.querySelector('.mb').innerText = mb;
+                card.querySelector('.tx').innerText = tx;
+            }
+        }, 1200);
+
+        // انیمیشن تغییر نوار پیشرفت
+        setInterval(() => {
+            const cells = document.querySelectorAll('.progress-cell');
+            const activeCount = Math.floor(Math.random() * 4) + 4; // بین 4 تا 7 خانه روشن
+            cells.forEach((cell, index) => {
+                if (index < activeCount) {
+                    cell.classList.add('active');
+                } else {
+                    cell.classList.remove('active');
+                }
+            });
+        }, 2500);
     }
 </script>
 
