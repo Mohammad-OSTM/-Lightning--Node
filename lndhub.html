@@ -186,9 +186,9 @@
             box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
         }
 
-        /* Result Cards Grid (3x3 Layout) */
+        /* Result Cards Grid (Initially Hidden) */
         .results-grid {
-            display: grid;
+            display: none;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             width: 100%;
@@ -200,6 +200,7 @@
         }
 
         .results-grid.visible {
+            display: grid;
             opacity: 1;
             transform: translateY(0);
         }
@@ -228,6 +229,7 @@
             font-weight: 700;
             color: #38bdf8;
             word-break: break-all;
+            min-height: 22px;
         }
 
         .node-card-value.online {
@@ -289,47 +291,47 @@
 
         <!-- Dynamic ID Search Bar -->
         <div class="search-container interactive">
-            <input type="text" id="nodeSearchInput" class="search-input" placeholder="Enter ID (e.g. 9508310099)" value="9508310099">
+            <input type="text" id="nodeSearchInput" class="search-input" placeholder="Search Node ...">
             <button id="searchBtn" class="search-btn">🔍</button>
         </div>
 
-        <!-- Dynamic Result Grid -->
-        <div id="resultsGrid" class="results-grid interactive visible">
+        <!-- Dynamic Result Grid (Hidden On Load) -->
+        <div id="resultsGrid" class="results-grid interactive">
             <div class="node-card">
                 <div class="node-card-title">ON/OFF</div>
-                <div class="node-card-value online" id="val-status">Online</div>
+                <div class="node-card-value online" id="val-status"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">WALLET ADDRESS</div>
-                <div class="node-card-value" id="val-wallet">GyUkZPmeTClYPgTJHL1AElHsfee9934zpA3wfL2fkbYQ</div>
+                <div class="node-card-value" id="val-wallet"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">STATUS TX</div>
-                <div class="node-card-value" id="val-tx">5d 8h 2m</div>
+                <div class="node-card-value" id="val-tx"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">COIN</div>
-                <div class="node-card-value" id="val-coin">SOL</div>
+                <div class="node-card-value" id="val-coin"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">FEE</div>
-                <div class="node-card-value" id="val-fee">14 SAT/VB</div>
+                <div class="node-card-value" id="val-fee"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">ACTIVE CHANNEL</div>
-                <div class="node-card-value" id="val-channel">Must Be Update Client</div>
+                <div class="node-card-value" id="val-channel"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">IP ADDRESS</div>
-                <div class="node-card-value" id="val-ip">🇦🇿 89.34.60.127</div>
+                <div class="node-card-value" id="val-ip">Detecting...</div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">MODE</div>
-                <div class="node-card-value" id="val-mode">CPU</div>
+                <div class="node-card-value" id="val-mode"></div>
             </div>
             <div class="node-card">
                 <div class="node-card-title">CHANNEL TYPE</div>
-                <div class="node-card-value" id="val-channeltype">6 Channel</div>
+                <div class="node-card-value" id="val-channeltype"></div>
             </div>
         </div>
 
@@ -340,7 +342,7 @@
 
     <!-- 3D Globe & Dynamic Data Logic -->
     <script>
-        // --- 3D Background Logic ---
+        // --- 3D Background Globe ---
         const container = document.getElementById('globe-container');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -431,7 +433,30 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- Dynamic Search & Variable Output Logic ---
+        // --- Fetch User Connection IP & Country Flag ---
+        let userIpInfo = { ip: "Detecting...", flag: "🌐" };
+
+        function getCountryFlagEmoji(countryCode) {
+            if (!countryCode) return "🌐";
+            return countryCode
+                .toUpperCase()
+                .replace(/./g, char => String.fromCodePoint(127397 + char.charCodeAt(0)));
+        }
+
+        fetch('https://ipapi.co/json/')
+            .then(res => res.json())
+            .then(data => {
+                if(data.ip) {
+                    userIpInfo.ip = data.ip;
+                    userIpInfo.flag = getCountryFlagEmoji(data.country_code);
+                }
+            })
+            .catch(() => {
+                userIpInfo.ip = "89.34.60.127";
+                userIpInfo.flag = "🇦🇿";
+            });
+
+        // --- Dynamic Search Logic ---
         const searchInput = document.getElementById('nodeSearchInput');
         const searchBtn = document.getElementById('searchBtn');
         const resultsGrid = document.getElementById('resultsGrid');
@@ -439,7 +464,6 @@
         function generateVariableData(query) {
             if (!query.trim()) return;
 
-            // Pseudo-random generator based on input string
             let hash = 0;
             for (let i = 0; i < query.length; i++) {
                 hash = query.charCodeAt(i) + ((hash << 5) - hash);
@@ -447,27 +471,24 @@
 
             const coins = ['SOL', 'BTC', 'ETH', 'USDT', 'LNC'];
             const modes = ['CPU', 'GPU', 'HYBRID', 'NODE-V2'];
-            const flags = ['🇦🇿', '🇩🇪', '🇺🇸', '🇫🇷', '🇬🇧', '🇯🇵'];
             
             const randomCoin = coins[Math.abs(hash) % coins.length];
             const randomMode = modes[Math.abs(hash) % modes.length];
-            const randomFlag = flags[Math.abs(hash) % flags.length];
             
             const randomFee = (Math.abs(hash % 30) + 5);
             const randomChannels = (Math.abs(hash % 12) + 1);
             const randomDays = (Math.abs(hash % 10) + 1);
             const randomHours = (Math.abs(hash % 24));
             
-            // Generate unique wallet address based on query
-            const walletStr = "G" + Math.abs(hash).toString(36) + "UkZPmeTClYPgTJHL" + query.slice(-4) + "fee9934zpA3wfL2fkbYQ";
-            const ipStr = `${randomFlag} ${(Math.abs(hash) % 150) + 20}.${Math.abs(hash >> 2) % 255}.${Math.abs(hash >> 4) % 255}.${Math.abs(hash >> 6) % 255}`;
+            const walletStr = "GyUkZPmeTClYPgTJHL" + Math.abs(hash).toString(36).toUpperCase() + query.slice(-4) + "zpA3wfL2fkbYQ";
 
-            // Update UI elements dynamically
+            document.getElementById('val-status').innerText = "Online";
             document.getElementById('val-wallet').innerText = walletStr;
             document.getElementById('val-tx').innerText = `${randomDays}d ${randomHours}h ${Math.abs(hash % 59)}m`;
             document.getElementById('val-coin').innerText = randomCoin;
             document.getElementById('val-fee').innerText = `${randomFee} SAT/VB`;
-            document.getElementById('val-ip').innerText = ipStr;
+            document.getElementById('val-channel').innerText = "Must Be Update Client";
+            document.getElementById('val-ip').innerText = `${userIpInfo.flag} ${userIpInfo.ip}`;
             document.getElementById('val-mode').innerText = randomMode;
             document.getElementById('val-channeltype').innerText = `${randomChannels} Channel`;
 
