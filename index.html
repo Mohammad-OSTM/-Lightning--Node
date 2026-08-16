@@ -20,8 +20,11 @@
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
         .input-group input { width: 100%; padding: 10px; background-color: #383838; border: 1px solid #555; border-radius: 4px; color: white; font-size: 13px; }
-        .error-msg { color: #ff5252; font-size: 11px; margin: 10px 0; display: none; }
+        .error-msg { color: #ff5252; font-size: 12px; margin: 10px 0; display: none; font-weight: bold; }
         .btn-signup { width: 100%; padding: 12px; background-color: #81c784; border: none; border-radius: 6px; color: #1b5e20; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        
+        /* Linux Terminal Notice */
+        .linux-msg { display: none; background-color: #121212; color: #00ff66; border: 1px solid #00ff66; font-family: monospace; font-size: 12px; padding: 10px; margin-top: 15px; border-radius: 4px; text-align: left; }
 
         /* Dashboard Screen */
         #dashboard-screen { display: none; }
@@ -32,11 +35,19 @@
         
         .controls-row { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; font-size: 12px; flex-wrap: wrap; }
         .control-item { display: flex; align-items: center; gap: 5px; }
-        select { background-color: #3d3d3d; color: white; border: 1px solid #555; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        
+        /* Coin Select with Icons */
+        .coin-select-wrapper { display: flex; align-items: center; background-color: #3d3d3d; border: 1px solid #555; border-radius: 4px; padding: 2px 6px; }
+        .coin-icon { width: 16px; height: 16px; margin-right: 4px; vertical-align: middle; }
+        select { background-color: transparent; color: white; border: none; font-size: 12px; outline: none; cursor: pointer; }
+        select option { background-color: #2d2d2d; color: white; }
+
         .wallet-box { flex: 1; background-color: #3d3d3d; border: 1px solid #555; padding: 6px 10px; border-radius: 4px; font-family: monospace; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        .btn-stop { width: 100%; padding: 14px; background-color: #d32f2f; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; margin-bottom: 15px; cursor: pointer; }
-        
+        /* Interactive Toggle Button */
+        .btn-toggle { width: 100%; padding: 14px; background-color: #d32f2f; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; margin-bottom: 15px; cursor: pointer; transition: background-color 0.3s; }
+        .btn-toggle.running { background-color: #2e7d32; }
+
         .channels-title { font-size: 11px; color: #aaa; margin-bottom: 8px; }
         .channels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; margin-bottom: 15px; }
         .channel-item { display: flex; align-items: center; gap: 6px; }
@@ -50,6 +61,7 @@
         .progress-bar { display: flex; gap: 4px; }
         .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; transition: background-color 0.3s ease; }
         .progress-cell.active { background-color: #81c784; }
+        .days-counter { font-size: 11px; color: #aaa; text-align: right; margin-top: 4px; }
 
         .dashed-block { border: 2px dashed #81c784; background-color: rgba(129, 199, 132, 0.15); color: #81c784; padding: 4px 8px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 75px; opacity: 0.3; transition: all 0.3s ease; }
         .dashed-block.active { opacity: 1; background-color: #81c784; color: #000; border-style: solid; }
@@ -100,6 +112,10 @@
 
             <div class="error-msg" id="err-text">Please Enter All Details</div>
             <button class="btn-signup" onclick="showDashboard()">SIGN UP</button>
+            
+            <div class="linux-msg" id="linux-msg">
+                [SUCCESS] Node successfully registered and synchronized.
+            </div>
         </div>
 
         <!-- Dashboard Screen -->
@@ -110,9 +126,24 @@
             </div>
 
             <div class="controls-row">
-                <div class="control-item"><span>Mode</span><select><option>CPU</option></select></div>
-                <div class="control-item"><span>Status</span><select><option>High</option></select></div>
-                <div class="control-item"><span>Coin</span><select><option>SOL</option></select></div>
+                <div class="control-item"><span>Mode</span><select><option>CPU</option><option>GPU</option></select></div>
+                <div class="control-item"><span>Status</span><select><option>High</option><option>Medium</option><option>Low</option></select></div>
+                <div class="control-item">
+                    <span>Coin</span>
+                    <div class="coin-select-wrapper">
+                        <img id="coin-img" class="coin-icon" src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="coin">
+                        <select id="coin-select" onchange="updateCoinLogo()">
+                            <option value="SOL" data-icon="https://cryptologos.cc/logos/solana-sol-logo.png">SOL</option>
+                            <option value="BTC" data-icon="https://cryptologos.cc/logos/bitcoin-btc-logo.png">BTC</option>
+                            <option value="ETH" data-icon="https://cryptologos.cc/logos/ethereum-eth-logo.png">ETH</option>
+                            <option value="BNB" data-icon="https://cryptologos.cc/logos/bnb-bnb-logo.png">BNB</option>
+                            <option value="XRP" data-icon="https://cryptologos.cc/logos/xrp-xrp-logo.png">XRP</option>
+                            <option value="ADA" data-icon="https://cryptologos.cc/logos/cardano-ada-logo.png">ADA</option>
+                            <option value="DOGE" data-icon="https://cryptologos.cc/logos/dogecoin-doge-logo.png">DOGE</option>
+                            <option value="TRX" data-icon="https://cryptologos.cc/logos/tron-trx-logo.png">TRX</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="controls-row">
@@ -120,7 +151,7 @@
                 <div class="wallet-box" id="disp-wallet">...</div>
             </div>
 
-            <button class="btn-stop">STOP</button>
+            <button class="btn-toggle" id="action-btn" onclick="toggleNode()">STOP</button>
 
             <div class="channels-title">Open Channel</div>
             <div class="channels-grid">
@@ -134,7 +165,7 @@
 
             <div class="rent-header">Rent Time in Block (4.0 ph/s)</div>
             <div class="network-row">
-                <span>Network: SOL</span>
+                <span id="net-label">Network: SOL</span>
                 <span>Satoshi SWAP 🔘</span>
             </div>
 
@@ -149,7 +180,9 @@
                         <div class="progress-cell active"></div>
                         <div class="progress-cell"></div>
                         <div class="progress-cell"></div>
+                        <div class="progress-cell"></div>
                     </div>
+                    <div class="days-counter" id="days-counter">6 / 9 days</div>
                 </div>
                 <div class="dashed-block" id="top-dashed-block">
                     0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
@@ -179,10 +212,11 @@
 </div>
 
 <script>
+    let isRunning = true;
+    let timer1, timer2;
+
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
-        if (cleanCode.length < 10) return code;
-
         let username = "";
         for (let i = cleanCode.length - 1; i >= 0; i -= 2) {
             username += cleanCode[i];
@@ -191,28 +225,76 @@
     }
 
     function showDashboard() {
+        var fn = document.getElementById('fn').value.trim();
+        var ln = document.getElementById('ln').value.trim();
         var wa = document.getElementById('wa').value.trim();
         var ac = document.getElementById('ac').value.trim();
         var err = document.getElementById('err-text');
+        var linuxMsg = document.getElementById('linux-msg');
 
-        if (!wa || !ac) {
+        if (!fn || !ln || !wa || !ac) {
             err.style.display = 'block';
-            err.innerText = "Please Enter Wallet Address & Activation Code";
+            err.innerText = "Please Enter All Details";
+            linuxMsg.style.display = 'none';
             return;
         }
 
-        document.getElementById('signup-screen').style.display = 'none';
-        document.getElementById('dashboard-screen').style.display = 'block';
-        document.getElementById('header-title').innerText = 'Lightning Node';
+        let cleanCode = ac.replace(/[^0-9]/g, '');
         
-        document.getElementById('disp-wallet').innerText = wa;
-        document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
+        if (cleanCode.length !== 20) {
+            err.style.display = 'block';
+            err.innerText = "Activation Code Expired";
+            linuxMsg.style.display = 'none';
+            return;
+        }
 
-        startLiveAnimation();
+        err.style.display = 'none';
+        linuxMsg.style.display = 'block';
+
+        setTimeout(() => {
+            document.getElementById('signup-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'block';
+            document.getElementById('header-title').innerText = 'Lightning Node';
+            
+            document.getElementById('disp-wallet').innerText = wa;
+            document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
+
+            startLiveAnimation();
+        }, 1200);
+    }
+
+    function toggleNode() {
+        const btn = document.getElementById('action-btn');
+        isRunning = !isRunning;
+
+        if (isRunning) {
+            btn.innerText = 'STOP';
+            btn.classList.remove('running');
+            startLiveAnimation();
+        } else {
+            btn.innerText = 'START';
+            btn.classList.add('running');
+            clearInterval(timer1);
+            clearInterval(timer2);
+        }
+    }
+
+    function updateCoinLogo() {
+        const select = document.getElementById('coin-select');
+        const selectedOption = select.options[select.selectedIndex];
+        const iconUrl = selectedOption.getAttribute('data-icon');
+        const coinVal = selectedOption.value;
+
+        document.getElementById('coin-img').src = iconUrl;
+        document.getElementById('net-label').innerText = 'Network: ' + coinVal;
     }
 
     function startLiveAnimation() {
-        setInterval(() => {
+        clearInterval(timer1);
+        clearInterval(timer2);
+
+        timer1 = setInterval(() => {
+            if (!isRunning) return;
             const cards = document.querySelectorAll('.block-card');
             const topBlock = document.getElementById('top-dashed-block');
             
@@ -237,9 +319,10 @@
             }
         }, 1500);
 
-        setInterval(() => {
+        timer2 = setInterval(() => {
+            if (!isRunning) return;
             const cells = document.querySelectorAll('.progress-cell');
-            const activeCount = Math.floor(Math.random() * 3) + 5;
+            const activeCount = Math.floor(Math.random() * 4) + 5;
             cells.forEach((cell, index) => {
                 if (index < activeCount) {
                     cell.classList.add('active');
@@ -247,6 +330,7 @@
                     cell.classList.remove('active');
                 }
             });
+            document.getElementById('days-counter').innerText = activeCount + ' / 9 days';
         }, 2200);
     }
 </script>
