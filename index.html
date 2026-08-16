@@ -121,8 +121,8 @@
             justify-content: center; 
             align-items: center; 
             line-height: 1.1; 
-            transition: all 0.3s ease;
-            opacity: 0.5;
+            transition: all 0.4s ease;
+            opacity: 0.4;
         }
 
         .validator-card-solid.active { 
@@ -289,6 +289,7 @@
     let isRunning = false;
     let swapActive = false;
     let timer1;
+    let sequenceTimeouts = []; // آرایه برای مدیریت تایمرهای ترتیبی
     
     const DAY_IN_MS = 24 * 60 * 60 * 1000;
     let totalActiveTime = parseFloat(localStorage.getItem('nodeTotalActiveTime')) || 0;
@@ -376,6 +377,10 @@
         let validatorCards = document.querySelectorAll('.validator-card-solid');
         let topDashed = document.getElementById('top-dashed-block');
         
+        // پاکسازی تایمرهای قبلی در صورت وجود
+        sequenceTimeouts.forEach(t => clearTimeout(t));
+        sequenceTimeouts = [];
+
         isRunning = !isRunning;
 
         if (isRunning) {
@@ -391,17 +396,21 @@
                 channelItems[i].classList.add('active');
             }
 
-            // ۱. ابتدا ۵ کارت پایین روشن می‌شوند
-            for (let i = 0; i < validatorCards.length; i++) {
-                validatorCards[i].classList.add('active');
-            }
+            // ۱. روشن شدن ۵ کارت پایین دانه به دانه از چپ به راست (هر ۴۰۰ میلی‌ثانیه یکی)
+            let delayStep = 400; 
+            validatorCards.forEach((card, index) => {
+                let t = setTimeout(() => {
+                    if (isRunning) card.classList.add('active');
+                }, index * delayStep);
+                sequenceTimeouts.push(t);
+            });
 
-            // ۲. کارت اصلی بالا با ۱.۵ ثانیه تأخیر روشن می‌شود
-            setTimeout(() => {
-                if (isRunning) {
-                    topDashed.classList.add('active');
-                }
-            }, 1500);
+            // ۲. روشن شدن کارت بالایی بعد از اتمام ۵ کارت پایین
+            let totalBottomTime = validatorCards.length * delayStep;
+            let tTop = setTimeout(() => {
+                if (isRunning) topDashed.classList.add('active');
+            }, totalBottomTime);
+            sequenceTimeouts.push(tTop);
 
             startProcessing();
         } else {
@@ -415,6 +424,7 @@
                 lastStartTime = null;
             }
 
+            // خاموش کردن همه کارت‌ها
             for (let i = 0; i < validatorCards.length; i++) {
                 validatorCards[i].classList.remove('active');
             }
