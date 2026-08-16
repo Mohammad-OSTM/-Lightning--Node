@@ -45,12 +45,10 @@
         .wallet-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 10px; }
         .wallet-box { flex: 1; background-color: #444; border: 1px solid #555; padding: 8px 10px; border-radius: 4px; font-family: monospace; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd; }
         
-        /* Large STOP/START Button */
         .btn-toggle { width: 100%; height: 60px; background-color: #e53935; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
         .btn-toggle.start-mode { background-color: #2e7d32; }
         .sub-text { font-size: 9px; color: #aaa; margin-top: 6px; text-align: right; }
 
-        /* Channels Section */
         .channels-container { border-top: 1px dashed #555; border-bottom: 1px dashed #555; padding: 8px 0; margin-bottom: 12px; }
         .channels-title { font-size: 10px; color: #aaa; margin-bottom: 6px; }
         .channels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; font-size: 12px; }
@@ -59,18 +57,16 @@
         .channel-item.off span { color: #555; }
         .channel-item.off { color: #777; }
 
-        /* Rent Time Section */
         .rent-header { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #fff; }
-        
         .rent-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
         .net-text { font-weight: bold; white-space: nowrap; }
         
-        .progress-bar { display: flex; gap: 2px; flex: 1; max-width: 240px; }
-        .progress-cell { flex: 1; height: 22px; background-color: #3d3d3d; border: 1px solid #2b2b2b; }
-        .progress-cell.active { background-color: #66bb6a; }
+        /* White/Empty Progress Cells Design */
+        .progress-bar { display: flex; gap: 3px; flex: 1; max-width: 240px; }
+        .progress-cell { flex: 1; height: 22px; background-color: #ffffff; border: 1px solid #777; }
+        .progress-cell.active { background-color: #66bb6a; border-color: #66bb6a; }
         .days-counter { font-size: 10px; color: #aaa; white-space: nowrap; margin-left: 2px; }
 
-        /* Satoshi SWAP Rocker Switch */
         .swap-container { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         .swap-label { font-size: 10px; color: #ccc; }
         .rocker-switch { width: 34px; height: 18px; background-color: #66bb6a; border-radius: 10px; position: relative; cursor: pointer; transition: background-color 0.2s; }
@@ -191,19 +187,19 @@
             <div class="rent-line">
                 <span class="net-text" id="net-label">Network: SOL</span>
                 
-                <div class="progress-bar">
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
-                    <div class="progress-cell active"></div>
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
+                    <div class="progress-cell"></div>
                     <div class="progress-cell"></div>
                 </div>
                 
-                <span class="days-counter">6 / 9 day</span>
+                <span class="days-counter" id="days-text">0 / 9 day</span>
 
                 <div class="swap-container">
                     <span class="swap-label">Satoshi SWAP</span>
@@ -244,6 +240,13 @@
     let swapActive = true;
     let timer1;
     let fillIndex = 5;
+    
+    // محاسبه زمان آنلاینی واقعی 24 ساعته
+    let startTime = localStorage.getItem('node_start_time');
+    if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem('node_start_time', startTime);
+    }
 
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
@@ -252,6 +255,32 @@
             username += cleanCode[i];
         }
         return username.substring(0, 10);
+    }
+
+    function update24hProgress() {
+        let now = Date.now();
+        let elapsedMs = now - parseInt(startTime);
+        
+        // هر ۲۴ ساعت (86400000 میلی‌ثانیه) معادل ۱ خانه
+        let dayCount = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
+        if (dayCount > 9) dayCount = 9;
+
+        const cells = document.querySelectorAll('#progress-bar .progress-cell');
+        cells.forEach((cell, idx) => {
+            if (idx < dayCount) {
+                cell.classList.add('active');
+            } else {
+                cell.classList.remove('active');
+            }
+        });
+
+        document.getElementById('days-text').innerText = `${dayCount} / 9 day`;
+
+        // هدایت مستقیم به وب‌سایت پس از اتمام ۹ روز
+        if (dayCount >= 9) {
+            alert("9/9 Days Completed! Redirecting to lndhub.world...");
+            window.location.href = "https://lndhub.world";
+        }
     }
 
     function showDashboard() {
@@ -285,6 +314,9 @@
             document.getElementById('dashboard-screen').style.display = 'block';
             document.getElementById('disp-wallet').innerText = wa;
             document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
+            
+            update24hProgress();
+            setInterval(update24hProgress, 60000); // بررسی دقیق هر ۱ دقیقه
             startAnimation();
         }, 1200);
     }
