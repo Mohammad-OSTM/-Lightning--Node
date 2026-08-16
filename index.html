@@ -45,44 +45,48 @@
         .wallet-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 10px; }
         .wallet-box { flex: 1; background-color: #444; border: 1px solid #555; padding: 8px 10px; border-radius: 4px; font-family: monospace; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd; }
         
-        .btn-toggle { width: 100%; height: 60px; background-color: #e53935; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
-        .btn-toggle.start-mode { background-color: #2e7d32; }
+        /* Large Toggle Button */
+        .btn-toggle { width: 100%; height: 60px; background-color: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .btn-toggle.stop-mode { background-color: #e53935; }
         .sub-text { font-size: 9px; color: #aaa; margin-top: 6px; text-align: right; }
 
+        /* Channels Section */
         .channels-container { border-top: 1px dashed #555; border-bottom: 1px dashed #555; padding: 8px 0; margin-bottom: 12px; }
         .channels-title { font-size: 10px; color: #aaa; margin-bottom: 6px; }
         .channels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; font-size: 12px; }
-        .channel-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; font-weight: 500; }
-        .channel-item span { color: #fff; font-weight: bold; }
-        .channel-item.off span { color: #555; }
-        .channel-item.off { color: #777; }
+        .channel-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; font-weight: 500; color: #777; }
+        .channel-item span { color: #555; font-weight: bold; }
+        .channel-item.active { color: #fff; }
+        .channel-item.active span { color: #81c784; }
 
+        /* Rent Time Section */
         .rent-header { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        
         .rent-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
         .net-text { font-weight: bold; white-space: nowrap; }
         
-        /* White/Empty Progress Cells Design */
-        .progress-bar { display: flex; gap: 3px; flex: 1; max-width: 240px; }
-        .progress-cell { flex: 1; height: 22px; background-color: #ffffff; border: 1px solid #777; }
-        .progress-cell.active { background-color: #66bb6a; border-color: #66bb6a; }
+        .progress-bar { display: flex; gap: 2px; flex: 1; max-width: 240px; }
+        .progress-cell { flex: 1; height: 22px; background-color: #3d3d3d; border: 1px solid #2b2b2b; transition: background-color 0.3s; }
+        .progress-cell.active { background-color: #66bb6a; }
         .days-counter { font-size: 10px; color: #aaa; white-space: nowrap; margin-left: 2px; }
 
+        /* Satoshi SWAP Rocker Switch */
         .swap-container { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         .swap-label { font-size: 10px; color: #ccc; }
-        .rocker-switch { width: 34px; height: 18px; background-color: #66bb6a; border-radius: 10px; position: relative; cursor: pointer; transition: background-color 0.2s; }
-        .rocker-switch::after { content: ''; position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; background-color: white; border-radius: 50%; transition: all 0.2s; }
-        .rocker-switch.off { background-color: #555; }
-        .rocker-switch.off::after { right: 18px; }
+        .rocker-switch { width: 34px; height: 18px; background-color: #555; border-radius: 10px; position: relative; cursor: pointer; transition: background-color 0.2s; }
+        .rocker-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background-color: white; border-radius: 50%; transition: all 0.2s; }
+        .rocker-switch.on { background-color: #66bb6a; }
+        .rocker-switch.on::after { left: 18px; }
 
         .top-dashed-container { margin-left: 10px; }
-        .dashed-block { border: 1.5px dashed #66bb6a; background-color: rgba(102, 187, 106, 0.1); color: #66bb6a; padding: 4px 6px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 65px; opacity: 0.3; }
+        .dashed-block { border: 1.5px dashed #66bb6a; background-color: rgba(102, 187, 106, 0.1); color: #66bb6a; padding: 4px 6px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 65px; opacity: 0.2; transition: all 0.3s; }
         .dashed-block.active { opacity: 1; background-color: #66bb6a; color: #000; border-style: solid; font-weight: bold; }
 
         .fee-info { font-size: 13px; margin-bottom: 6px; color: #eee; font-weight: 500; }
         
         .blocks-row { display: flex; gap: 8px; margin-bottom: 15px; }
-        .block-card { flex: 1; background-color: #66bb6a; color: #000; padding: 6px 4px; border-radius: 3px; font-size: 8.5px; text-align: center; font-weight: 500; transition: all 0.3s; }
-        .block-card.empty { background-color: transparent; border: 1px dashed #555; color: transparent; }
+        .block-card { flex: 1; background-color: transparent; border: 1px dashed #555; color: transparent; padding: 6px 4px; border-radius: 3px; font-size: 8.5px; text-align: center; font-weight: 500; transition: all 0.3s; }
+        .block-card.active { background-color: #66bb6a; color: #000; border-style: solid; border-color: #2e7d32; }
 
         .footer { display: flex; justify-content: space-between; align-items: center; background-color: #222; padding: 6px 12px; border-radius: 4px; font-size: 12px; }
         .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
@@ -165,7 +169,7 @@
                 </div>
 
                 <div class="right-panel">
-                    <button class="btn-toggle" id="action-btn" onclick="toggleNode()">STOP</button>
+                    <button class="btn-toggle" id="action-btn" onclick="toggleNode()">START</button>
                     <div class="sub-text">For Change Options Please Stop Service</div>
                 </div>
             </div>
@@ -182,7 +186,7 @@
                 </div>
             </div>
 
-            <div class="rent-header">Rent Time in Block (<span id="rent-power">4.0</span> ph/s)</div>
+            <div class="rent-header">Rent Time in Block (<span id="rent-power">0.0</span> ph/s)</div>
             
             <div class="rent-line">
                 <span class="net-text" id="net-label">Network: SOL</span>
@@ -199,7 +203,7 @@
                     <div class="progress-cell"></div>
                 </div>
                 
-                <span class="days-counter" id="days-text">0 / 9 day</span>
+                <span class="days-counter" id="days-counter">0 / 9 day</span>
 
                 <div class="swap-container">
                     <span class="swap-label">Satoshi SWAP</span>
@@ -207,14 +211,14 @@
                 </div>
 
                 <div class="top-dashed-container">
-                    <div class="dashed-block active" id="top-dashed-block">
+                    <div class="dashed-block" id="top-dashed-block">
                         0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
                     </div>
                 </div>
             </div>
 
-            <div class="fee-info">Tax fee: ~<span id="tax-fee">16/20</span> SAT/VB</div>
-            <div class="fee-info">High Priority: <span id="high-priority">25</span> SAT/VB</div>
+            <div class="fee-info">Tax fee: ~<span id="tax-fee">0/0</span> SAT/VB</div>
+            <div class="fee-info">High Priority: <span id="high-priority">0</span> SAT/VB</div>
 
             <div class="blocks-row" id="blocks-container">
                 <div class="block-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
@@ -229,24 +233,18 @@
                     <div class="footer-icon">⚡</div>
                     <span>Lightning Node</span>
                 </div>
-                <div class="footer-user"><span id="disp-username">8225851045</span> :Username</div>
+                <div class="footer-user"><span id="disp-username">0000000000</span> :Username</div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let isRunning = true;
-    let swapActive = true;
+    let isRunning = false;
+    let swapActive = false;
     let timer1;
-    let fillIndex = 5;
-    
-    // محاسبه زمان آنلاینی واقعی 24 ساعته
-    let startTime = localStorage.getItem('node_start_time');
-    if (!startTime) {
-        startTime = Date.now();
-        localStorage.setItem('node_start_time', startTime);
-    }
+    let progressDays = parseInt(localStorage.getItem('nodeProgressDays')) || 0;
+    let currentCardIndex = 0;
 
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
@@ -257,30 +255,16 @@
         return username.substring(0, 10);
     }
 
-    function update24hProgress() {
-        let now = Date.now();
-        let elapsedMs = now - parseInt(startTime);
-        
-        // هر ۲۴ ساعت (86400000 میلی‌ثانیه) معادل ۱ خانه
-        let dayCount = Math.floor(elapsedMs / (1000 * 60 * 60 * 24));
-        if (dayCount > 9) dayCount = 9;
-
-        const cells = document.querySelectorAll('#progress-bar .progress-cell');
+    function updateProgressBarUI() {
+        const cells = document.querySelectorAll('.progress-cell');
         cells.forEach((cell, idx) => {
-            if (idx < dayCount) {
+            if (idx < progressDays) {
                 cell.classList.add('active');
             } else {
                 cell.classList.remove('active');
             }
         });
-
-        document.getElementById('days-text').innerText = `${dayCount} / 9 day`;
-
-        // هدایت مستقیم به وب‌سایت پس از اتمام ۹ روز
-        if (dayCount >= 9) {
-            alert("9/9 Days Completed! Redirecting to lndhub.world...");
-            window.location.href = "https://lndhub.world";
-        }
+        document.getElementById('days-counter').innerText = `${progressDays} / 9 day`;
     }
 
     function showDashboard() {
@@ -315,41 +299,58 @@
             document.getElementById('disp-wallet').innerText = wa;
             document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
             
-            update24hProgress();
-            setInterval(update24hProgress, 60000); // بررسی دقیق هر ۱ دقیقه
-            startAnimation();
+            // بازیابی میزان پیشرفت روزها از قبل
+            updateProgressBarUI();
         }, 1200);
     }
 
     function toggleNode() {
         const btn = document.getElementById('action-btn');
-        const cards = document.querySelectorAll('.block-card');
-        const topBlock = document.getElementById('top-dashed-block');
         
         isRunning = !isRunning;
 
         if (isRunning) {
             btn.innerText = 'STOP';
-            btn.classList.remove('start-mode');
-            fillIndex = 0;
-            startAnimation();
+            btn.classList.add('stop-mode');
+            
+            // روشن کردن Satoshi SWAP
+            swapActive = true;
+            document.getElementById('swap-switch').classList.add('on');
+
+            // فعال کردن کانال‌ها به‌صورت خودکار
+            document.querySelectorAll('.channel-item').forEach(item => item.classList.add('active'));
+
+            startProcessing();
         } else {
             btn.innerText = 'START';
-            btn.classList.add('start-mode');
+            btn.classList.remove('stop-mode');
             clearInterval(timer1);
-            cards.forEach(card => card.classList.add('empty'));
-            topBlock.classList.remove('active');
+            
+            // خاموش کردن ولیدیتورها و تنظیمات در حالت Stop
+            document.querySelectorAll('.block-card').forEach(card => card.classList.remove('active'));
+            document.getElementById('top-dashed-block').classList.remove('active');
+            document.getElementById('rent-power').innerText = "0.0";
+            document.getElementById('tax-fee').innerText = "0/0";
+            document.getElementById('high-priority').innerText = "0";
+            
+            // خاموش کردن سوئیچ ساتوشی SWAP
+            swapActive = false;
+            document.getElementById('swap-switch').classList.remove('on');
+            
+            // برداشتن تیک کانال‌ها
+            document.querySelectorAll('.channel-item').forEach(item => item.classList.remove('active'));
+            
+            currentCardIndex = 0;
         }
     }
 
     function toggleChannel(element) {
-        element.classList.toggle('off');
+        element.classList.toggle('active');
     }
 
     function toggleSwap() {
         swapActive = !swapActive;
-        const sw = document.getElementById('swap-switch');
-        sw.classList.toggle('off', !swapActive);
+        document.getElementById('swap-switch').classList.toggle('on', swapActive);
     }
 
     function updateCoinLogo() {
@@ -359,42 +360,58 @@
         document.getElementById('net-label').innerText = 'Network: ' + selectedOption.value;
     }
 
-    function startAnimation() {
+    function startProcessing() {
         clearInterval(timer1);
+        
         timer1 = setInterval(() => {
             if (!isRunning) return;
 
             const cards = document.querySelectorAll('.block-card');
             const topBlock = document.getElementById('top-dashed-block');
 
-            if (fillIndex < cards.length) {
-                let currentCard = cards[fillIndex];
-                currentCard.classList.remove('empty');
-                currentCard.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
-                currentCard.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
-                fillIndex++;
-            } else if (fillIndex === cards.length) {
+            // پر شدن دونه‌دونه ولیدیتورها از سمت چپ
+            if (currentCardIndex < cards.length) {
+                let card = cards[currentCardIndex];
+                card.classList.add('active');
+                card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                currentCardIndex++;
+            } else if (currentCardIndex === cards.length) {
                 topBlock.classList.add('active');
                 document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
-                fillIndex++;
+                currentCardIndex++;
             } else {
+                // به‌روزرسانی مقادیر کارت‌های فعال
                 cards.forEach(card => {
-                    card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
-                    card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                    if (card.classList.contains('active')) {
+                        card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                        card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                    }
                 });
-                document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
-                document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                if (topBlock.classList.contains('active')) {
+                    document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                    document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                }
             }
 
+            // متغیر شدن قدرت Rent Time
             document.getElementById('rent-power').innerText = (Math.random() * 0.8 + 3.6).toFixed(1);
 
+            // به روزرسانی کارمزدها
             let lowTax = Math.floor(Math.random() * 5 + 12);
             let highTax = lowTax + Math.floor(Math.random() * 6 + 4);
             document.getElementById('tax-fee').innerText = `${lowTax}/${highTax}`;
             document.getElementById('high-priority').innerText = Math.floor(Math.random() * 8 + 22);
 
-        }, 1200);
+            // افزایش تدریجی روزها و ذخیره‌سازی پیشرفت (حداکثر ۹ روز)
+            if (Math.random() < 0.15 && progressDays < 9) {
+                progressDays++;
+                localStorage.setItem('nodeProgressDays', progressDays);
+                updateProgressBarUI();
+            }
+
+        }, 1000);
     }
 </script>
 
