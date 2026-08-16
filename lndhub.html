@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LNDHUB - Lightning Node Manager</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #0b132b; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        .header-stats { display: flex; gap: 15px; width: 100%; max-width: 1000px; margin-bottom: 25px; }
+        .stat-box { flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 15px; text-align: center; }
+        .stat-value { font-size: 28px; font-weight: bold; color: #4cc9f0; margin-top: 5px; }
+        .stat-label { font-size: 13px; color: #a0aab8; }
+
+        .search-container { width: 100%; max-width: 700px; margin-bottom: 30px; position: relative; }
+        .search-box { width: 100%; padding: 12px 50px 12px 20px; border-radius: 25px; border: 1px solid #3a86ff; background: #1c2541; color: #fff; font-size: 18px; outline: none; text-align: center; }
+        .search-btn { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%; background: #3a86ff; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 1000px; display: none; }
+        .card { background: #1c2541; border-radius: 8px; padding: 15px; text-align: center; border: 1px solid #2a385b; }
+        .card-title { font-size: 12px; font-weight: bold; color: #8d99ae; margin-bottom: 8px; text-transform: uppercase; }
+        .card-value { font-size: 14px; font-weight: bold; color: #4cc9f0; word-break: break-all; }
+        .card-value.status { color: #06d6a0; }
+        
+        .flag-icon { width: 16px; height: 11px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+    </style>
+</head>
+<body>
+
+    <div class="header-stats">
+        <div class="stat-box"><div class="stat-label">Nodes</div><div class="stat-value">6,012</div></div>
+        <div class="stat-box"><div class="stat-label">Active Channels</div><div class="stat-value">19,927</div></div>
+        <div class="stat-box"><div class="stat-label">Network Capacity</div><div class="stat-value">2,632.4 BTC</div></div>
+        <div class="stat-box"><div class="stat-label">Cities</div><div class="stat-value">12</div></div>
+        <div class="stat-box"><div class="stat-label">Countries</div><div class="stat-value">281</div></div>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-box" placeholder="Enter Username ID..." value="8225851045">
+        <button class="search-btn" onclick="performSearch()">🔍</button>
+    </div>
+
+    <div class="grid-container" id="results-grid">
+        <div class="card"><div class="card-title">ON/OFF</div><div class="card-value status" id="res-status">Online</div></div>
+        <div class="card"><div class="card-title">WALLET ADDRESS</div><div class="card-value" id="res-wallet">GyUkZPmeTCiYPgTJHL1AEiHsfee9934zpA3wfL2fkbYQ</div></div>
+        <div class="card"><div class="card-title">STATUS TX</div><div class="card-value" id="res-tx">Pending ⓘ</div></div>
+        <div class="card"><div class="card-title">COIN</div><div class="card-value" id="res-coin">SOL</div></div>
+        <div class="card"><div class="card-title">FEE</div><div class="card-value" id="res-fee">15 SAT/VB</div></div>
+        <div class="card"><div class="card-title">ACTIVE CHANNEL</div><div class="card-value" id="res-channel">Must Be Update Client</div></div>
+        <div class="card"><div class="card-title">IP ADDRESS</div><div class="card-value" id="res-ip">🇮🇷 5.117.240.152</div></div>
+        <div class="card"><div class="card-title">MODE</div><div class="card-value" id="res-mode">CPU</div></div>
+        <div class="card"><div class="card-title">CHANNEL TYPE</div><div class="card-value" id="res-type">6 Channel</div></div>
+    </div>
+
+    <script>
+        const mockData = {
+            "8225851045": {
+                tx: "Pending ⓘ",
+                fee: "15 SAT/VB",
+                ip: "🇮🇷 5.117.240.152"
+            },
+            "9508310099": {
+                tx: "5d 8h 2m",
+                fee: "14 SAT/VB",
+                ip: "🇮🇷 89.34.60.127"
+            }
+        };
+
+        function performSearch() {
+            let query = document.getElementById('search-input').value.trim();
+            let resultsGrid = document.getElementById('results-grid');
+
+            if (!query) return;
+
+            let data = mockData[query] || {
+                tx: Math.floor(Math.random() * 8 + 1) + "d " + Math.floor(Math.random() * 12 + 1) + "h",
+                fee: Math.floor(Math.random() * 5 + 12) + " SAT/VB",
+                ip: "🇮🇷 " + Math.floor(Math.random() * 200 + 1) + "." + Math.floor(Math.random() * 200 + 1) + "." + Math.floor(Math.random() * 200 + 1) + "." + Math.floor(Math.random() * 200 + 1)
+            };
+
+            document.getElementById('res-tx').innerText = data.tx;
+            document.getElementById('res-fee').innerText = data.fee;
+            document.getElementById('res-ip').innerText = data.ip;
+
+            resultsGrid.style.display = 'grid';
+        }
+
+        window.onload = function() {
+            performSearch();
+        };
+
+        document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>
