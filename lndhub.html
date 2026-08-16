@@ -186,7 +186,7 @@
             box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
         }
 
-        /* Result Cards Grid (Initially Hidden) */
+        /* Result Cards Grid */
         .results-grid {
             display: none;
             grid-template-columns: repeat(3, 1fr);
@@ -289,13 +289,13 @@
             </div>
         </div>
 
-        <!-- Dynamic ID Search Bar -->
+        <!-- Search Bar -->
         <div class="search-container interactive">
             <input type="text" id="nodeSearchInput" class="search-input" placeholder="Search Node ...">
             <button id="searchBtn" class="search-btn">🔍</button>
         </div>
 
-        <!-- Dynamic Result Grid (Hidden On Load) -->
+        <!-- Result Grid -->
         <div id="resultsGrid" class="results-grid interactive">
             <div class="node-card">
                 <div class="node-card-title">ON/OFF</div>
@@ -433,7 +433,7 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // --- Fetch User Connection IP & Country Flag ---
+        // --- Fetch User IP & Country Flag ---
         let userIpInfo = { ip: "Detecting...", flag: "🌐" };
 
         function getCountryFlagEmoji(countryCode) {
@@ -476,21 +476,20 @@
             const randomMode = modes[Math.abs(hash) % modes.length];
             
             const randomFee = (Math.abs(hash % 30) + 5);
-            const randomChannels = (Math.abs(hash % 12) + 1);
-            const randomDays = (Math.abs(hash % 10) + 1);
-            const randomHours = (Math.abs(hash % 24));
             
-            const walletStr = "GyUkZPmeTClYPgTJHL" + Math.abs(hash).toString(36).toUpperCase() + query.slice(-4) + "zpA3wfL2fkbYQ";
+            // Days constrained between 1 and 7 (less than 8 days)
+            const randomDays = (Math.abs(hash % 7) + 1); 
+            const randomHours = (Math.abs(hash % 24));
 
             document.getElementById('val-status').innerText = "Online";
-            document.getElementById('val-wallet').innerText = walletStr;
+            document.getElementById('val-wallet').innerText = ""; // Empty Wallet Address as requested
             document.getElementById('val-tx').innerText = `${randomDays}d ${randomHours}h ${Math.abs(hash % 59)}m`;
             document.getElementById('val-coin').innerText = randomCoin;
             document.getElementById('val-fee').innerText = `${randomFee} SAT/VB`;
             document.getElementById('val-channel').innerText = "Must Be Update Client";
             document.getElementById('val-ip').innerText = `${userIpInfo.flag} ${userIpInfo.ip}`;
             document.getElementById('val-mode').innerText = randomMode;
-            document.getElementById('val-channeltype').innerText = `${randomChannels} Channel`;
+            document.getElementById('val-channeltype').innerText = "6 Channel"; // Fixed to 6 Channel
 
             resultsGrid.classList.add('visible');
         }
