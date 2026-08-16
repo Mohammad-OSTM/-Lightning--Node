@@ -30,6 +30,7 @@
             height: 100%;
             z-index: 1;
             cursor: grab;
+            touch-action: none;
         }
 
         #globe-container:active {
@@ -356,7 +357,12 @@
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
-        controls.enableZoom = false;
+        
+        // Enabling Zooming for Mobile & Desktop
+        controls.enableZoom = true;
+        controls.minDistance = 100;
+        controls.maxDistance = 350;
+        controls.zoomSpeed = 0.8;
 
         const radius = 70;
         const globeGroup = new THREE.Group();
@@ -477,19 +483,19 @@
             
             const randomFee = (Math.abs(hash % 30) + 5);
             
-            // Days constrained between 1 and 7 (less than 8 days)
+            // Days constrained between 1 and 7
             const randomDays = (Math.abs(hash % 7) + 1); 
             const randomHours = (Math.abs(hash % 24));
 
             document.getElementById('val-status').innerText = "Online";
-            document.getElementById('val-wallet').innerText = ""; // Empty Wallet Address as requested
+            document.getElementById('val-wallet').innerText = ""; 
             document.getElementById('val-tx').innerText = `${randomDays}d ${randomHours}h ${Math.abs(hash % 59)}m`;
             document.getElementById('val-coin').innerText = randomCoin;
             document.getElementById('val-fee').innerText = `${randomFee} SAT/VB`;
             document.getElementById('val-channel').innerText = "Must Be Update Client";
             document.getElementById('val-ip').innerText = `${userIpInfo.flag} ${userIpInfo.ip}`;
             document.getElementById('val-mode').innerText = randomMode;
-            document.getElementById('val-channeltype').innerText = "6 Channel"; // Fixed to 6 Channel
+            document.getElementById('val-channeltype').innerText = "6 Channel"; 
 
             resultsGrid.classList.add('visible');
         }
