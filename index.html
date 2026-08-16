@@ -51,7 +51,6 @@
         .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; transition: background-color 0.3s ease; }
         .progress-cell.active { background-color: #81c784; }
 
-        /* Floating Dashed Block */
         .dashed-block { border: 2px dashed #81c784; background-color: rgba(129, 199, 132, 0.15); color: #81c784; padding: 4px 8px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 75px; opacity: 0.3; transition: all 0.3s ease; }
         .dashed-block.active { opacity: 1; background-color: #81c784; color: #000; border-style: solid; }
 
@@ -152,7 +151,6 @@
                         <div class="progress-cell"></div>
                     </div>
                 </div>
-                <!-- Dashed Top Block -->
                 <div class="dashed-block" id="top-dashed-block">
                     0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
                 </div>
@@ -181,9 +179,20 @@
 </div>
 
 <script>
+    function generateUsernameFromCode(code) {
+        let cleanCode = code.replace(/[^0-9]/g, '');
+        if (cleanCode.length < 10) return code;
+
+        let username = "";
+        for (let i = cleanCode.length - 1; i >= 0; i -= 2) {
+            username += cleanCode[i];
+        }
+        return username.substring(0, 10);
+    }
+
     function showDashboard() {
-        var wa = document.getElementById('wa').value;
-        var ac = document.getElementById('ac').value;
+        var wa = document.getElementById('wa').value.trim();
+        var ac = document.getElementById('ac').value.trim();
         var err = document.getElementById('err-text');
 
         if (!wa || !ac) {
@@ -197,7 +206,7 @@
         document.getElementById('header-title').innerText = 'Lightning Node';
         
         document.getElementById('disp-wallet').innerText = wa;
-        document.getElementById('disp-username').innerText = ac;
+        document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
 
         startLiveAnimation();
     }
@@ -218,7 +227,6 @@
                 }
             });
 
-            // وقتی تمام بلاک‌های پایین در وضعیت فعال باشند، بلاک بالایی خط‌چین هم فعال و پر می‌شود
             const activeCardsCount = document.querySelectorAll('.block-card:not(.empty)').length;
             if (activeCardsCount >= 4) {
                 topBlock.classList.add('active');
@@ -229,10 +237,9 @@
             }
         }, 1500);
 
-        // انیمیشن نوار پیشرفت
         setInterval(() => {
             const cells = document.querySelectorAll('.progress-cell');
-            const activeCount = Math.floor(Math.random() * 3) + 5; // 5 تا 7 خانه پر
+            const activeCount = Math.floor(Math.random() * 3) + 5;
             cells.forEach((cell, index) => {
                 if (index < activeCount) {
                     cell.classList.add('active');
