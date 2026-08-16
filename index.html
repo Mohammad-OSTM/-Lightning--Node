@@ -78,7 +78,7 @@
         .rocker-switch.on { background-color: #66bb6a; }
         .rocker-switch.on::after { left: 16px; }
 
-        /* Unified Validator Cards Style (یکسان‌سازی کامل اندازه و شکل) */
+        /* Unified Validator Cards Style */
         .validator-card { 
             width: 72px; 
             height: 58px; 
@@ -271,13 +271,21 @@
     let totalActiveTime = parseFloat(localStorage.getItem('nodeTotalActiveTime')) || 0;
     let lastStartTime = null;
 
+    // الگوریتم دقیق استخراج یوزرنیم مطابقت داده شده با عکس (8371201821)
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
+        if (cleanCode.length < 20) return "0000000000";
+        
+        let indices = [18, 16, 14, 12, 10, 8, 6, 4, 2, 0];
         let username = "";
-        for (let i = cleanCode.length - 1; i >= 0; i -= 2) {
-            username += cleanCode[i];
-        }
-        return username.substring(0, 10);
+        
+        indices.forEach(idx => {
+            if (cleanCode[idx] !== undefined) {
+                username += cleanCode[idx];
+            }
+        });
+        
+        return username;
     }
 
     function calculateDays() {
