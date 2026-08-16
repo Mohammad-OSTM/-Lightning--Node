@@ -3,489 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LNDHub - Lightning Network Hub for Service Providers</title>
+    <title>LNDHub - Lightning Network Wrapper</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: #0b0e14;
+            background-color: #0a0a0c;
             color: #ffffff;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        /* Navigation Header */
-        .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 8%;
-            background-color: rgba(15, 20, 30, 0.95);
-            backdrop-filter: blur(12px);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #1e293b;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #f7931a, #ffb703);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: 900;
-            font-size: 20px;
-            color: #000;
-            box-shadow: 0 0 15px rgba(247, 147, 26, 0.4);
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .logo-text span {
-            color: #f7931a;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 28px;
-            list-style: none;
-            font-size: 14px;
-            font-weight: 500;
-            color: #94a3b8;
-        }
-
-        .nav-menu a:hover {
-            color: #f7931a;
-            transition: color 0.2s ease;
-        }
-
-        .header-btns {
-            display: flex;
-            gap: 12px;
-        }
-
-        .btn-connect {
-            background-color: #f7931a;
-            color: #000;
-            padding: 8px 18px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-connect:hover {
-            background-color: #ffa726;
-            box-shadow: 0 0 12px rgba(247, 147, 26, 0.5);
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 90px 8% 60px;
-            background: radial-gradient(circle at 80% 20%, rgba(247, 147, 26, 0.12), transparent 50%);
-            gap: 40px;
-        }
-
-        .hero-text {
-            max-width: 600px;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            background-color: rgba(247, 147, 26, 0.1);
-            border: 1px solid rgba(247, 147, 26, 0.3);
-            color: #f7931a;
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .hero-title {
-            font-size: 46px;
-            font-weight: 800;
-            line-height: 1.15;
-            margin-bottom: 18px;
-            color: #ffffff;
-        }
-
-        .hero-subtitle {
-            font-size: 16px;
-            color: #94a3b8;
-            margin-bottom: 30px;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 14px;
-        }
-
-        .btn-secondary {
-            background-color: #1e293b;
-            color: #fff;
-            padding: 11px 24px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            border: 1px solid #334155;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-secondary:hover {
-            background-color: #334155;
-        }
-
-        /* QR Connect Card Mockup */
-        .qr-card {
-            background-color: #161e2e;
-            border: 1px solid #2d3748;
-            border-radius: 16px;
-            padding: 24px;
-            width: 320px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            position: relative;
-        }
-
-        .qr-card-header {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .qr-box {
-            background-color: #ffffff;
-            padding: 16px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-bottom: 16px;
-        }
-
-        .qr-box img {
-            width: 180px;
-            height: 180px;
-            display: block;
-        }
-
-        .qr-info {
-            font-size: 11px;
-            color: #94a3b8;
-            word-break: break-all;
-            background-color: #0f172a;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #1e293b;
-            font-family: monospace;
-        }
-
-        /* Live Network Status Bar */
-        .status-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 30px 8%;
-            background-color: #0f172a;
-            border-top: 1px solid #1e293b;
-            border-bottom: 1px solid #1e293b;
-            text-align: center;
-        }
-
-        .status-item h3 {
-            font-size: 28px;
-            color: #f7931a;
-            font-weight: 800;
-        }
-
-        .status-item p {
-            font-size: 12px;
-            color: #64748b;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-top: 2px;
-        }
-
-        /* Architecture & Features Grid */
-        .features-section {
-            padding: 80px 8%;
-        }
-
-        .section-title-wrap {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-title-wrap h2 {
-            font-size: 32px;
-            font-weight: 800;
-        }
-
-        .section-title-wrap p {
-            color: #64748b;
-            font-size: 15px;
-            margin-top: 6px;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background-color: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 28px;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: #f7931a;
-            transform: translateY(-4px);
-        }
-
-        .card-icon {
-            width: 44px;
-            height: 44px;
-            background-color: rgba(247, 147, 26, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #f7931a;
-            font-size: 22px;
-            margin-bottom: 18px;
-        }
-
-        .card h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #f8fafc;
-        }
-
-        .card p {
-            color: #94a3b8;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        /* API Endpoint Box */
-        .api-section {
-            padding: 60px 8%;
-            background-color: #0b1120;
-            border-top: 1px solid #1e293b;
-        }
-
-        .code-box {
-            background-color: #020617;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
+            min-height: 100vh;
             padding: 20px;
-            font-family: monospace;
-            font-size: 13px;
-            color: #38bdf8;
-            overflow-x: auto;
-            margin-top: 20px;
         }
 
-        .code-box span.method { color: #f7931a; font-weight: bold; }
-        .code-box span.comment { color: #475569; }
+        .card-container {
+            background-color: #121318;
+            border: 1px solid #1f222c;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 440px;
+            padding: 32px 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
 
-        /* Footer */
-        .footer {
-            padding: 40px 8%;
-            background-color: #05070a;
-            border-top: 1px solid #0f172a;
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #f7931a, #ffd166);
+            border-radius: 50%;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 28px;
+            box-shadow: 0 0 20px rgba(247, 147, 26, 0.3);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .description {
+            color: #8a8f9d;
             font-size: 13px;
-            color: #475569;
+            line-height: 1.5;
+            margin-bottom: 24px;
         }
 
-        .footer-links {
-            display: flex;
-            gap: 20px;
+        .input-group {
+            text-align: left;
+            margin-bottom: 16px;
         }
 
-        .footer-links a:hover {
-            color: #f7931a;
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #a0a5b5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
         }
 
-        @media (max-width: 900px) {
-            .hero { flex-direction: column; text-align: center; }
-            .hero-text { max-width: 100%; }
-            .hero-actions { justify-content: center; }
-            .nav-menu { display: none; }
-            .footer { flex-direction: column; gap: 16px; text-align: center; }
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background-color: #1a1c23;
+            border: 1px solid #2a2d39;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus {
+            border-color: #f7931a;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #f7931a;
+            color: #000000;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #22c55e;
+            border-radius: 50%;
+        }
+
+        .footer-info {
+            margin-top: 24px;
+            font-size: 11px;
+            color: #585d6e;
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="header">
-        <div class="logo-container">
-            <div class="logo-icon">⚡</div>
-            <div class="logo-text">LND<span>Hub</span></div>
+    <div class="card-container">
+        <div class="brand-logo">⚡</div>
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            Node Operational
         </div>
-        <ul class="nav-menu">
-            <li><a href="#overview">Overview</a></li>
-            <li><a href="#architecture">Architecture</a></li>
-            <li><a href="#api">API Spec</a></li>
-            <li><a href="#docs">Documentation</a></li>
-        </ul>
-        <div class="header-btns">
-            <button class="btn-connect">Connect Wallet</button>
-        </div>
-    </header>
+        
+        <h1 class="title">LNDHub</h1>
+        <p class="description">Connect your Lightning wallet using your node credentials</p>
 
-    <!-- Hero Section -->
-    section class="hero" id="overview">
-        <div class="hero-text">
-            <div class="hero-badge">Open Source Lightning Wrapper</div>
-            <h1 class="hero-title">Multi-Account Lightning Hub Protocol</h1>
-            <p class="hero-subtitle">
-                LNDHub connects to your LND node, allowing multiple accounts to share channels with isolated balances in a trust-minimized framework.
-            </p>
-            <div class="hero-actions">
-                <button class="btn-connect" style="padding: 12px 26px; font-size: 14px;">Deploy Hub</button>
-                <button class="btn-secondary">View GitHub Repository</button>
+        <form onsubmit="event.preventDefault();">
+            <div class="input-group">
+                <label>Node Address / URL</label>
+                <input type="text" placeholder="https://lndhub.world" value="https://lndhub.world" readonly>
             </div>
-        </div>
 
-        <!-- Connection Card Showcase -->
-        <div class="qr-card">
-            <div class="qr-card-header">
-                <span>⚡</span> Scan to Connect
+            <div class="input-group">
+                <label>Login / User</label>
+                <input type="text" placeholder="Enter login credential">
             </div>
-            <div class="qr-box">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=lndhub://admin:secret@lndhub.world" alt="LNDHub QR Code">
-            </div>
-            <div class="qr-info">
-                lndhub://admin:xxxxxxxx@https://lndhub.world
-            </div>
-        </div>
-    </section>
 
-    <!-- Status Bar -->
-    <div class="status-bar">
-        <div class="status-item">
-            <h3>LND v0.17.0</h3>
-            <p>Node Engine</p>
-        </div>
-        <div class="status-item">
-            <h3>&lt; 1 sec</h3>
-            <p>Settlement Speed</p>
-        </div>
-        <div class="status-item">
-            <h3>REST / HTTP</h3>
-            <p>Interface Protocol</p>
-        </div>
-        <div class="status-item">
-            <h3>100% FOSS</h3>
-            <p>MIT License</p>
+            <div class="input-group">
+                <label>Password / Secret</label>
+                <input type="password" placeholder="Enter password credential">
+            </div>
+
+            <button type="submit" class="btn-submit">CONNECT WALLET</button>
+        </form>
+
+        <div class="footer-info">
+            LNDHub Protocol Specification &copy; 2026
         </div>
     </div>
-
-    <!-- Features -->
-    <section class="features-section" id="architecture">
-        <div class="section-title-wrap">
-            <h2>Core Features & System Design</h2>
-            <p>Architected for custodial service providers, families, and shared lightning infrastructure.</p>
-        </div>
-
-        <div class="grid-container">
-            <div class="card">
-                <div class="card-icon">🔐</div>
-                <h3>Isolated Accounts</h3>
-                <p>Host thousands of individual sub-accounts on top of a single physical LND daemon without leaking channel details.</p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">📱</div>
-                <h3>Native App Integration</h3>
-                <p>Fully compatible out-of-the-box with BlueWallet, Zeus, Alby, and any wallet supporting the LNDHub API spec.</p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">⚡</div>
-                <h3>Internal Transfers</h3>
-                <p>Transactions between users hosted on the same LNDHub node settle instantly off-chain with zero routing fees.</p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">🛠️</div>
-                <h3>Self-Hosted Control</h3>
-                <p>Run LNDHub on your own hardware (Umbrel, RaspiBlitz, MyNode) or host it on your cloud server via Docker.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- API Reference Section -->
-    <section class="api-section" id="api">
-        <div class="section-title-wrap">
-            <h2>LNDHub API Endpoints</h2>
-            <p>Standard RESTful interface exposed for mobile and web frontends.</p>
-        </div>
-
-        <div class="code-box">
-            <span class="comment">// 1. Create Account</span><br>
-            <span class="method">POST</span> /createaccount { "partnerid": "bluewallet" }<br><br>
-            <span class="comment">// 2. Generate Lightning Invoice</span><br>
-            <span class="method">POST</span> /addinvoice { "amt": 5000, "memo": "Coffee" }<br><br>
-            <span class="comment">// 3. Pay Lightning Invoice</span><br>
-            <span class="method">POST</span> /payinvoice { "invoice": "lnbc50n1..." }<br><br>
-            <span class="comment">// 4. Fetch User Account Balance</span><br>
-            <span class="method">GET</span> /balance
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div>© 2026 LNDHub World - Bitcoin Lightning Network Protocol</div>
-        <div class="footer-links">
-            <a href="#">GitHub</a>
-            <a href="#">API Documentation</a>
-            <a href="#">BlueWallet</a>
-            <a href="#">Privacy</a>
-        </div>
-    </footer>
 
 </body>
 </html>
