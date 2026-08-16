@@ -6,88 +6,99 @@
     <title>Lightning Node</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #1e1e1e; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        body { background-color: #121212; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
         
-        .window { width: 100%; max-width: 520px; background-color: #2d2d2d; border-radius: 8px; border: 1px solid #444; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .window-header { background-color: #3c3c3c; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #ccc; border-bottom: 1px solid #444; }
-        .window-body { padding: 16px; }
+        .window { width: 100%; max-width: 680px; background-color: #2b2b2b; border-radius: 6px; border: 1px solid #444; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        .window-header { background-color: #383838; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #ccc; border-bottom: 1px solid #444; }
+        .window-body { padding: 14px; }
 
         /* Signup Screen */
-        #signup-screen { text-align: center; }
-        .logo-circle { width: 90px; height: 90px; background-color: #2979ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 10px auto 15px; }
-        .logo-circle svg { width: 50px; height: 50px; fill: white; }
-        .signup-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-        .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
-        .input-group input { width: 100%; padding: 10px; background-color: #383838; border: 1px solid #555; border-radius: 4px; color: white; font-size: 13px; }
-        .error-msg { color: #ff5252; font-size: 12px; margin: 10px 0; display: none; font-weight: bold; }
-        .btn-signup { width: 100%; padding: 12px; background-color: #81c784; border: none; border-radius: 6px; color: #1b5e20; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        
-        /* Linux Terminal Notice */
-        .linux-msg { display: none; background-color: #121212; color: #00ff66; border: 1px solid #00ff66; font-family: monospace; font-size: 12px; padding: 10px; margin-top: 15px; border-radius: 4px; text-align: left; }
+        #signup-screen { text-align: center; max-width: 450px; margin: 0 auto; }
+        .logo-circle { width: 80px; height: 80px; background-color: #2979ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 10px auto 15px; }
+        .logo-circle svg { width: 45px; height: 45px; fill: white; }
+        .signup-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+        .input-group { margin-bottom: 10px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: #aaa; margin-bottom: 3px; }
+        .input-group input { width: 100%; padding: 8px 10px; background-color: #383838; border: 1px solid #555; border-radius: 4px; color: white; font-size: 12px; }
+        .error-msg { color: #ff5252; font-size: 11px; margin: 8px 0; display: none; font-weight: bold; }
+        .btn-signup { width: 100%; padding: 10px; background-color: #81c784; border: none; border-radius: 4px; color: #1b5e20; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
+        .linux-msg { display: none; background-color: #121212; color: #00ff66; border: 1px solid #00ff66; font-family: monospace; font-size: 11px; padding: 8px; margin-top: 10px; border-radius: 4px; text-align: left; }
 
         /* Dashboard Screen */
         #dashboard-screen { display: none; }
-        .nav-tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 8px; }
-        .tab { padding: 6px 16px; border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer; }
-        .tab.active { background-color: #333; color: white; border: 1px solid #555; }
-        .tab.inactive { color: #888; }
+        .nav-tabs { display: flex; gap: 15px; margin-bottom: 12px; font-size: 13px; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 6px; }
+        .tab { cursor: pointer; color: #888; }
+        .tab.active { color: #fff; border-bottom: 2px solid #fff; padding-bottom: 4px; }
         
-        .controls-row { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; font-size: 12px; flex-wrap: wrap; }
-        .control-item { display: flex; align-items: center; gap: 5px; }
+        .main-layout { display: flex; gap: 12px; margin-bottom: 12px; }
+        .left-panel { flex: 1; }
+        .right-panel { width: 150px; display: flex; flex-direction: column; align-items: flex-end; }
+
+        .controls-row { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; font-size: 12px; flex-wrap: wrap; }
+        .control-item { display: flex; align-items: center; gap: 6px; }
         
         .coin-select-wrapper { display: flex; align-items: center; background-color: #3d3d3d; border: 1px solid #555; border-radius: 4px; padding: 2px 6px; }
-        .coin-icon { width: 16px; height: 16px; margin-right: 4px; vertical-align: middle; }
+        .coin-icon { width: 14px; height: 14px; margin-right: 4px; }
         select { background-color: transparent; color: white; border: none; font-size: 12px; outline: none; cursor: pointer; }
         select option { background-color: #2d2d2d; color: white; }
 
-        .wallet-box { flex: 1; background-color: #3d3d3d; border: 1px solid #555; padding: 6px 10px; border-radius: 4px; font-family: monospace; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .wallet-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 10px; }
+        .wallet-box { flex: 1; background-color: #444; border: 1px solid #555; padding: 8px 10px; border-radius: 4px; font-family: monospace; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd; }
         
-        /* START / STOP Toggle Button */
-        .btn-toggle { width: 100%; padding: 14px; background-color: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; margin-bottom: 15px; cursor: pointer; transition: background-color 0.3s; }
-        .btn-toggle.stopped { background-color: #d32f2f; }
+        /* Large STOP/START Button */
+        .btn-toggle { width: 100%; height: 60px; background-color: #e53935; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        .btn-toggle.start-mode { background-color: #2e7d32; }
+        .sub-text { font-size: 9px; color: #aaa; margin-top: 6px; text-align: right; }
 
-        .channels-title { font-size: 11px; color: #aaa; margin-bottom: 8px; }
-        .channels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; margin-bottom: 15px; }
-        .channel-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
-        .channel-item span { color: #81c784; font-weight: bold; }
+        /* Channels Section */
+        .channels-container { border-top: 1px dashed #555; border-bottom: 1px dashed #555; padding: 8px 0; margin-bottom: 12px; }
+        .channels-title { font-size: 10px; color: #aaa; margin-bottom: 6px; }
+        .channels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; font-size: 12px; }
+        .channel-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; font-weight: 500; }
+        .channel-item span { color: #fff; font-weight: bold; }
         .channel-item.off span { color: #555; }
         .channel-item.off { color: #777; }
 
-        .rent-header { font-size: 15px; font-weight: bold; margin-bottom: 10px; }
-        .network-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; }
+        /* Rent Time Section */
+        .rent-header { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #fff; }
         
-        .swap-toggle { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 4px; }
-        .swap-dot { width: 10px; height: 10px; border-radius: 50%; background-color: #81c784; display: inline-block; transition: background-color 0.2s; }
-        .swap-dot.off { background-color: #555; }
-
-        .progress-section { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
-        .progress-bar-container { flex: 1; display: flex; align-items: center; gap: 8px; }
-        .progress-bar { display: flex; gap: 4px; flex: 1; }
-        .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; }
-        .progress-cell.active { background-color: #81c784; }
-        .days-counter { font-size: 11px; color: #aaa; white-space: nowrap; }
-
-        .dashed-block { border: 2px dashed #81c784; background-color: rgba(129, 199, 132, 0.15); color: #81c784; padding: 4px 8px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 75px; opacity: 0.3; transition: all 0.3s ease; }
-        .dashed-block.active { opacity: 1; background-color: #81c784; color: #000; border-style: solid; }
-
-        .fee-info { font-size: 12px; margin-bottom: 4px; color: #ddd; }
+        .rent-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
+        .net-text { font-weight: bold; white-space: nowrap; }
         
-        .blocks-row { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
-        .block-card { background-color: #81c784; color: #000; padding: 6px; border-radius: 4px; font-size: 9px; text-align: center; min-width: 65px; border: 1px dashed #2e7d32; transition: all 0.4s ease; }
+        .progress-bar { display: flex; gap: 2px; flex: 1; max-width: 240px; }
+        .progress-cell { flex: 1; height: 22px; background-color: #3d3d3d; border: 1px solid #2b2b2b; }
+        .progress-cell.active { background-color: #66bb6a; }
+        .days-counter { font-size: 10px; color: #aaa; white-space: nowrap; margin-left: 2px; }
+
+        /* Satoshi SWAP Rocker Switch */
+        .swap-container { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+        .swap-label { font-size: 10px; color: #ccc; }
+        .rocker-switch { width: 34px; height: 18px; background-color: #66bb6a; border-radius: 10px; position: relative; cursor: pointer; transition: background-color 0.2s; }
+        .rocker-switch::after { content: ''; position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; background-color: white; border-radius: 50%; transition: all 0.2s; }
+        .rocker-switch.off { background-color: #555; }
+        .rocker-switch.off::after { right: 18px; }
+
+        .top-dashed-container { margin-left: 10px; }
+        .dashed-block { border: 1.5px dashed #66bb6a; background-color: rgba(102, 187, 106, 0.1); color: #66bb6a; padding: 4px 6px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 65px; opacity: 0.3; }
+        .dashed-block.active { opacity: 1; background-color: #66bb6a; color: #000; border-style: solid; font-weight: bold; }
+
+        .fee-info { font-size: 13px; margin-bottom: 6px; color: #eee; font-weight: 500; }
+        
+        .blocks-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .block-card { flex: 1; background-color: #66bb6a; color: #000; padding: 6px 4px; border-radius: 3px; font-size: 8.5px; text-align: center; font-weight: 500; transition: all 0.3s; }
         .block-card.empty { background-color: transparent; border: 1px dashed #555; color: transparent; }
 
-        .footer { display: flex; justify-content: space-between; align-items: center; background-color: #242424; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
+        .footer { display: flex; justify-content: space-between; align-items: center; background-color: #222; padding: 6px 12px; border-radius: 4px; font-size: 12px; }
         .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
-        .footer-icon { width: 20px; height: 20px; background-color: #ab47bc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
-        .footer-user { font-weight: bold; letter-spacing: 0.5px; }
+        .footer-icon { width: 22px; height: 22px; background-color: #ab47bc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+        .footer-user { font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="window">
     <div class="window-header">
-        <span id="header-title">Signup</span>
+        <span id="header-title">Lightning Node</span>
         <div><span>—</span> <span>□</span> <span>✕</span></div>
     </div>
     
@@ -127,74 +138,82 @@
         <!-- Dashboard Screen -->
         <div id="dashboard-screen">
             <div class="nav-tabs">
-                <div class="tab active">Home</div>
-                <div class="tab inactive">Report</div>
+                <span class="tab active">Home</span>
+                <span class="tab">Report</span>
             </div>
 
-            <div class="controls-row">
-                <div class="control-item"><span>Mode</span><select><option>CPU</option><option>GPU</option></select></div>
-                <div class="control-item"><span>Status</span><select><option>High</option><option>Medium</option><option>Low</option></select></div>
-                <div class="control-item">
-                    <span>Coin</span>
-                    <div class="coin-select-wrapper">
-                        <img id="coin-img" class="coin-icon" src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="coin">
-                        <select id="coin-select" onchange="updateCoinLogo()">
-                            <option value="SOL" data-icon="https://cryptologos.cc/logos/solana-sol-logo.png">SOL</option>
-                            <option value="BTC" data-icon="https://cryptologos.cc/logos/bitcoin-btc-logo.png">BTC</option>
-                            <option value="ETH" data-icon="https://cryptologos.cc/logos/ethereum-eth-logo.png">ETH</option>
-                            <option value="BNB" data-icon="https://cryptologos.cc/logos/bnb-bnb-logo.png">BNB</option>
-                            <option value="XRP" data-icon="https://cryptologos.cc/logos/xrp-xrp-logo.png">XRP</option>
-                            <option value="ADA" data-icon="https://cryptologos.cc/logos/cardano-ada-logo.png">ADA</option>
-                            <option value="DOGE" data-icon="https://cryptologos.cc/logos/dogecoin-doge-logo.png">DOGE</option>
-                            <option value="TRX" data-icon="https://cryptologos.cc/logos/tron-trx-logo.png">TRX</option>
-                        </select>
+            <div class="main-layout">
+                <div class="left-panel">
+                    <div class="controls-row">
+                        <div class="control-item"><span>Mode</span><select><option>CPU</option><option>GPU</option></select></div>
+                        <div class="control-item"><span>Status</span><select><option>High</option><option>Medium</option></select></div>
+                        <div class="control-item">
+                            <span>Coin</span>
+                            <div class="coin-select-wrapper">
+                                <img id="coin-img" class="coin-icon" src="https://cryptologos.cc/logos/solana-sol-logo.png" alt="coin">
+                                <select id="coin-select" onchange="updateCoinLogo()">
+                                    <option value="SOL" data-icon="https://cryptologos.cc/logos/solana-sol-logo.png">SOL</option>
+                                    <option value="BTC" data-icon="https://cryptologos.cc/logos/bitcoin-btc-logo.png">BTC</option>
+                                    <option value="ETH" data-icon="https://cryptologos.cc/logos/ethereum-eth-logo.png">ETH</option>
+                                    <option value="BNB" data-icon="https://cryptologos.cc/logos/bnb-bnb-logo.png">BNB</option>
+                                    <option value="XRP" data-icon="https://cryptologos.cc/logos/xrp-xrp-logo.png">XRP</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="wallet-row">
+                        <span>Wallet Address</span>
+                        <div class="wallet-box" id="disp-wallet">...</div>
+                    </div>
+                </div>
+
+                <div class="right-panel">
+                    <button class="btn-toggle" id="action-btn" onclick="toggleNode()">STOP</button>
+                    <div class="sub-text">For Change Options Please Stop Service</div>
                 </div>
             </div>
 
-            <div class="controls-row">
-                <span>Wallet Address</span>
-                <div class="wallet-box" id="disp-wallet">...</div>
-            </div>
-
-            <button class="btn-toggle" id="action-btn" onclick="toggleNode()">START</button>
-
-            <div class="channels-title">Open Channel</div>
-            <div class="channels-grid">
-                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> BTC Pay Server</div>
-                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> WX Network</div>
-                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Wallet of Satoshi</div>
-                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Tippin.Me</div>
-                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Open Node</div>
-                <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Acinq.1ML.com</div>
+            <div class="channels-container">
+                <div class="channels-title">Open Channel</div>
+                <div class="channels-grid">
+                    <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> BTC Pay Server</div>
+                    <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Wallet of Satoshi</div>
+                    <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> WX Network</div>
+                    <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Open Node</div>
+                    <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Acinq.1ML.com</div>
+                    <div class="channel-item" onclick="toggleChannel(this)"><span>✓</span> Tippin.Me</div>
+                </div>
             </div>
 
             <div class="rent-header">Rent Time in Block (<span id="rent-power">4.0</span> ph/s)</div>
-            <div class="network-row">
-                <span id="net-label">Network: SOL</span>
-                <div class="swap-toggle" onclick="toggleSwap()">
-                    <span>Satoshi SWAP</span>
-                    <span class="swap-dot" id="swap-dot"></span>
+            
+            <div class="rent-line">
+                <span class="net-text" id="net-label">Network: SOL</span>
+                
+                <div class="progress-bar">
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell active"></div>
+                    <div class="progress-cell"></div>
                 </div>
-            </div>
+                
+                <span class="days-counter">6 / 9 day</span>
 
-            <div class="progress-section">
-                <div class="progress-bar-container">
-                    <div class="progress-bar">
-                        <div class="progress-cell active"></div>
-                        <div class="progress-cell active"></div>
-                        <div class="progress-cell active"></div>
-                        <div class="progress-cell active"></div>
-                        <div class="progress-cell active"></div>
-                        <div class="progress-cell active"></div>
-                        <div class="progress-cell"></div>
-                        <div class="progress-cell"></div>
-                        <div class="progress-cell"></div>
-                    </div>
-                    <div class="days-counter">6 / 9 days</div>
+                <div class="swap-container">
+                    <span class="swap-label">Satoshi SWAP</span>
+                    <div class="rocker-switch" id="swap-switch" onclick="toggleSwap()"></div>
                 </div>
-                <div class="dashed-block" id="top-dashed-block">
-                    0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
+
+                <div class="top-dashed-container">
+                    <div class="dashed-block active" id="top-dashed-block">
+                        0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
+                    </div>
                 </div>
             </div>
 
@@ -202,11 +221,11 @@
             <div class="fee-info">High Priority: <span id="high-priority">25</span> SAT/VB</div>
 
             <div class="blocks-row" id="blocks-container">
-                <div class="block-card empty">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card empty">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card empty">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card empty">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
-                <div class="block-card empty">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
             </div>
 
             <div class="footer">
@@ -221,10 +240,10 @@
 </div>
 
 <script>
-    let isRunning = false;
+    let isRunning = true;
     let swapActive = true;
     let timer1;
-    let fillIndex = 0;
+    let fillIndex = 5;
 
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
@@ -251,7 +270,6 @@
         }
 
         let cleanCode = ac.replace(/[^0-9]/g, '');
-        
         if (cleanCode.length !== 20) {
             err.style.display = 'block';
             err.innerText = "Activation Code Expired";
@@ -265,10 +283,9 @@
         setTimeout(() => {
             document.getElementById('signup-screen').style.display = 'none';
             document.getElementById('dashboard-screen').style.display = 'block';
-            document.getElementById('header-title').innerText = 'Lightning Node';
-            
             document.getElementById('disp-wallet').innerText = wa;
             document.getElementById('disp-username').innerText = generateUsernameFromCode(ac);
+            startAnimation();
         }, 1200);
     }
 
@@ -281,15 +298,13 @@
 
         if (isRunning) {
             btn.innerText = 'STOP';
-            btn.classList.add('stopped');
+            btn.classList.remove('start-mode');
             fillIndex = 0;
-            startSequentialAnimation();
+            startAnimation();
         } else {
             btn.innerText = 'START';
-            btn.classList.remove('stopped');
+            btn.classList.add('start-mode');
             clearInterval(timer1);
-            
-            // خاموش کردن کامل کارت‌ها
             cards.forEach(card => card.classList.add('empty'));
             topBlock.classList.remove('active');
         }
@@ -301,34 +316,25 @@
 
     function toggleSwap() {
         swapActive = !swapActive;
-        const dot = document.getElementById('swap-dot');
-        if (swapActive) {
-            dot.classList.remove('off');
-        } else {
-            dot.classList.add('off');
-        }
+        const sw = document.getElementById('swap-switch');
+        sw.classList.toggle('off', !swapActive);
     }
 
     function updateCoinLogo() {
         const select = document.getElementById('coin-select');
         const selectedOption = select.options[select.selectedIndex];
-        const iconUrl = selectedOption.getAttribute('data-icon');
-        const coinVal = selectedOption.value;
-
-        document.getElementById('coin-img').src = iconUrl;
-        document.getElementById('net-label').innerText = 'Network: ' + coinVal;
+        document.getElementById('coin-img').src = selectedOption.getAttribute('data-icon');
+        document.getElementById('net-label').innerText = 'Network: ' + selectedOption.value;
     }
 
-    function startSequentialAnimation() {
+    function startAnimation() {
         clearInterval(timer1);
-
         timer1 = setInterval(() => {
             if (!isRunning) return;
 
             const cards = document.querySelectorAll('.block-card');
             const topBlock = document.getElementById('top-dashed-block');
 
-            // پر شدن منظم ولیدیتورها از چپ به راست
             if (fillIndex < cards.length) {
                 let currentCard = cards[fillIndex];
                 currentCard.classList.remove('empty');
@@ -341,7 +347,6 @@
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
                 fillIndex++;
             } else {
-                // به‌روزرسانی زنده اطلاعات کارت‌ها پس از پر شدن
                 cards.forEach(card => {
                     card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
                     card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
@@ -350,10 +355,8 @@
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
             }
 
-            // متغیر شدن Rent Time in Block (قدرت ph/s)
-            document.getElementById('rent-power').innerText = (Math.random() * 1.2 + 3.5).toFixed(1);
+            document.getElementById('rent-power').innerText = (Math.random() * 0.8 + 3.6).toFixed(1);
 
-            // تغییرات زنده کارمزدها
             let lowTax = Math.floor(Math.random() * 5 + 12);
             let highTax = lowTax + Math.floor(Math.random() * 6 + 4);
             document.getElementById('tax-fee').innerText = `${lowTax}/${highTax}`;
