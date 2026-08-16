@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #1e1e1e; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
         
-        .window { width: 100%; max-width: 500px; background-color: #2d2d2d; border-radius: 8px; border: 1px solid #444; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .window { width: 100%; max-width: 520px; background-color: #2d2d2d; border-radius: 8px; border: 1px solid #444; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .window-header { background-color: #3c3c3c; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #ccc; border-bottom: 1px solid #444; }
         .window-body { padding: 16px; }
 
@@ -20,8 +20,8 @@
         .input-group { margin-bottom: 12px; text-align: left; }
         .input-group label { display: block; font-size: 12px; color: #aaa; margin-bottom: 4px; }
         .input-group input { width: 100%; padding: 10px; background-color: #383838; border: 1px solid #555; border-radius: 4px; color: white; font-size: 13px; }
-        .error-msg { color: #ff5252; font-size: 11px; margin: 10px 0; }
-        .btn-signup { width: 100%; padding: 12px; background-color: #81c784; border: none; border-radius: 6px; color: #1b5e20; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .error-msg { color: #ff5252; font-size: 11px; margin: 10px 0; display: none; }
+        .btn-signup { width: 100%; padding: 12px; background-color: #81c784; border: none; border-radius: 6px; color: #1b5e20; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
 
         /* Dashboard Screen */
         #dashboard-screen { display: none; }
@@ -45,15 +45,21 @@
         .rent-header { font-size: 15px; font-weight: bold; margin-bottom: 10px; }
         .network-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 8px; }
         
-        .progress-bar { display: flex; gap: 4px; margin-bottom: 12px; }
-        .progress-cell { flex: 1; height: 20px; background-color: #e0e0e0; border-radius: 2px; transition: background-color 0.3s ease; }
+        .progress-section { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
+        .progress-bar-container { flex: 1; }
+        .progress-bar { display: flex; gap: 4px; }
+        .progress-cell { flex: 1; height: 20px; background-color: #383838; border-radius: 2px; transition: background-color 0.3s ease; }
         .progress-cell.active { background-color: #81c784; }
+
+        /* Floating Dashed Block */
+        .dashed-block { border: 2px dashed #81c784; background-color: rgba(129, 199, 132, 0.15); color: #81c784; padding: 4px 8px; border-radius: 4px; font-size: 8px; text-align: center; min-width: 75px; opacity: 0.3; transition: all 0.3s ease; }
+        .dashed-block.active { opacity: 1; background-color: #81c784; color: #000; border-style: solid; }
 
         .fee-info { font-size: 12px; margin-bottom: 4px; color: #ddd; }
         
         .blocks-row { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; }
-        .block-card { background-color: #81c784; color: #000; padding: 6px; border-radius: 4px; font-size: 9px; text-align: center; min-width: 65px; border: 1px dashed #2e7d32; transition: all 0.4s ease; opacity: 1; }
-        .block-card.empty { background-color: transparent; border: 1px dashed #666; color: transparent; opacity: 0.2; }
+        .block-card { background-color: #81c784; color: #000; padding: 6px; border-radius: 4px; font-size: 9px; text-align: center; min-width: 65px; border: 1px dashed #2e7d32; transition: all 0.4s ease; }
+        .block-card.empty { background-color: transparent; border: 1px dashed #555; color: transparent; }
 
         .footer { display: flex; justify-content: space-between; align-items: center; background-color: #242424; padding: 8px 12px; border-radius: 6px; font-size: 12px; }
         .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
@@ -78,22 +84,22 @@
             
             <div class="input-group">
                 <label>First Name</label>
-                <input type="text" id="fn" value="Mohammad">
+                <input type="text" id="fn" placeholder="Enter First Name">
             </div>
             <div class="input-group">
                 <label>Last Name</label>
-                <input type="text" id="ln" value="Ostad Mohammadi">
+                <input type="text" id="ln" placeholder="Enter Last Name">
             </div>
             <div class="input-group">
                 <label>Wallet Address</label>
-                <input type="text" id="wa" value="GyUkZPmeTCiYPgTJHL1AEiHsfee9934zpA3wfL2fkbYQ">
+                <input type="text" id="wa" placeholder="Enter Wallet Address">
             </div>
             <div class="input-group">
                 <label>Activation Code</label>
-                <input type="text" id="ac" value="78870978564598670976">
+                <input type="text" id="ac" placeholder="Enter Activation Code">
             </div>
 
-            <div class="error-msg">Please Enter Wallet Address</div>
+            <div class="error-msg" id="err-text">Please Enter All Details</div>
             <button class="btn-signup" onclick="showDashboard()">SIGN UP</button>
         </div>
 
@@ -112,7 +118,7 @@
 
             <div class="controls-row">
                 <span>Wallet Address</span>
-                <div class="wallet-box" id="disp-wallet">GyUkZPmeTCiYPgTJHL1AEiHsfee9934zpA3wfL2fkbYQ</div>
+                <div class="wallet-box" id="disp-wallet">...</div>
             </div>
 
             <button class="btn-stop">STOP</button>
@@ -133,26 +139,34 @@
                 <span>Satoshi SWAP 🔘</span>
             </div>
 
-            <div class="progress-bar">
-                <div class="progress-cell active"></div>
-                <div class="progress-cell active"></div>
-                <div class="progress-cell active"></div>
-                <div class="progress-cell active"></div>
-                <div class="progress-cell active"></div>
-                <div class="progress-cell active"></div>
-                <div class="progress-cell"></div>
-                <div class="progress-cell"></div>
+            <div class="progress-section">
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-cell active"></div>
+                        <div class="progress-cell active"></div>
+                        <div class="progress-cell active"></div>
+                        <div class="progress-cell active"></div>
+                        <div class="progress-cell active"></div>
+                        <div class="progress-cell active"></div>
+                        <div class="progress-cell"></div>
+                        <div class="progress-cell"></div>
+                    </div>
+                </div>
+                <!-- Dashed Top Block -->
+                <div class="dashed-block" id="top-dashed-block">
+                    0-14 Sat/VB<br><span id="top-mb">1.12</span> MB<br><span id="top-tx">2,354</span> Transaction<br>Validators<br>online
+                </div>
             </div>
 
             <div class="fee-info">Tax fee: ~16/20 SAT/VB</div>
             <div class="fee-info">High Priority: 25 SAT/VB</div>
 
             <div class="blocks-row" id="blocks-container">
-                <div class="block-card">0-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction</div>
-                <div class="block-card">0-12 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction</div>
-                <div class="block-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction</div>
-                <div class="block-card">0-12 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction</div>
-                <div class="block-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction</div>
+                <div class="block-card">10-14 Sat/VB<br><span class="mb">1.12</span> MB<br><span class="tx">2,354</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">9-15 Sat/VB<br><span class="mb">1.75</span> MB<br><span class="tx">2,610</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">0-12 Sat/VB<br><span class="mb">2.40</span> MB<br><span class="tx">3,144</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">6-13 Sat/VB<br><span class="mb">1.90</span> MB<br><span class="tx">3,008</span> Transaction<br>Validators<br>online</div>
+                <div class="block-card">7-15 Sat/VB<br><span class="mb">1.65</span> MB<br><span class="tx">1,620</span> Transaction<br>Validators<br>online</div>
             </div>
 
             <div class="footer">
@@ -160,7 +174,7 @@
                     <div class="footer-icon">⚡</div>
                     <span>Lightning Node</span>
                 </div>
-                <div>:Username 8225851045</div>
+                <div>:<span id="disp-username">Username</span> :Username</div>
             </div>
         </div>
     </div>
@@ -168,36 +182,57 @@
 
 <script>
     function showDashboard() {
+        var wa = document.getElementById('wa').value;
+        var ac = document.getElementById('ac').value;
+        var err = document.getElementById('err-text');
+
+        if (!wa || !ac) {
+            err.style.display = 'block';
+            err.innerText = "Please Enter Wallet Address & Activation Code";
+            return;
+        }
+
         document.getElementById('signup-screen').style.display = 'none';
         document.getElementById('dashboard-screen').style.display = 'block';
         document.getElementById('header-title').innerText = 'Lightning Node';
-        var wa = document.getElementById('wa').value;
-        if(wa) document.getElementById('disp-wallet').innerText = wa;
         
+        document.getElementById('disp-wallet').innerText = wa;
+        document.getElementById('disp-username').innerText = ac;
+
         startLiveAnimation();
     }
 
     function startLiveAnimation() {
-        // انیمیشن پر و خالی شدن باکس‌های سبز کارمزد
         setInterval(() => {
             const cards = document.querySelectorAll('.block-card');
-            const randomIndex = Math.floor(Math.random() * cards.length);
-            const card = cards[randomIndex];
+            const topBlock = document.getElementById('top-dashed-block');
+            
+            let emptyCardIndex = Math.floor(Math.random() * cards.length);
+            cards.forEach((card, idx) => {
+                if (idx === emptyCardIndex) {
+                    card.classList.add('empty');
+                } else {
+                    card.classList.remove('empty');
+                    card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                    card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+                }
+            });
 
-            card.classList.toggle('empty');
-
-            if (!card.classList.contains('empty')) {
-                const mb = (Math.random() * 1.8 + 0.8).toFixed(2);
-                const tx = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
-                card.querySelector('.mb').innerText = mb;
-                card.querySelector('.tx').innerText = tx;
+            // وقتی تمام بلاک‌های پایین در وضعیت فعال باشند، بلاک بالایی خط‌چین هم فعال و پر می‌شود
+            const activeCardsCount = document.querySelectorAll('.block-card:not(.empty)').length;
+            if (activeCardsCount >= 4) {
+                topBlock.classList.add('active');
+                document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
+                document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
+            } else {
+                topBlock.classList.remove('active');
             }
-        }, 1200);
+        }, 1500);
 
-        // انیمیشن تغییر نوار پیشرفت
+        // انیمیشن نوار پیشرفت
         setInterval(() => {
             const cells = document.querySelectorAll('.progress-cell');
-            const activeCount = Math.floor(Math.random() * 4) + 4; // بین 4 تا 7 خانه روشن
+            const activeCount = Math.floor(Math.random() * 3) + 5; // 5 تا 7 خانه پر
             cells.forEach((cell, index) => {
                 if (index < activeCount) {
                     cell.classList.add('active');
@@ -205,7 +240,7 @@
                     cell.classList.remove('active');
                 }
             });
-        }, 2500);
+        }, 2200);
     }
 </script>
 
