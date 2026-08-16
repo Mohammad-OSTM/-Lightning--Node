@@ -6,113 +6,113 @@
     <title>Lightning Node</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #121212; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        body { background-color: #1a1a1a; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
         
-        .window { width: 100%; max-width: 680px; background-color: #2b2b2b; border-radius: 6px; border: 1px solid #444; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-        .window-header { background-color: #383838; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #ccc; border-bottom: 1px solid #444; }
-        .window-body { padding: 14px; }
+        .window { width: 100%; max-width: 620px; background-color: #2b2b2b; border-radius: 6px; border: 1px solid #444; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        .window-header { background-color: #383838; padding: 4px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #ccc; border-bottom: 1px solid #444; }
+        .window-body { padding: 10px 12px; }
 
         /* Signup Screen */
-        #signup-screen { text-align: center; max-width: 450px; margin: 0 auto; }
-        .logo-circle { width: 80px; height: 80px; background-color: #2979ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 10px auto 15px; }
-        .logo-circle svg { width: 45px; height: 45px; fill: white; }
-        .signup-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; }
-        .input-group { margin-bottom: 10px; text-align: left; }
-        .input-group label { display: block; font-size: 11px; color: #aaa; margin-bottom: 3px; }
-        .input-group input { width: 100%; padding: 8px 10px; background-color: #383838; border: 1px solid #555; border-radius: 4px; color: white; font-size: 12px; }
-        .error-msg { color: #ff5252; font-size: 11px; margin: 8px 0; display: none; font-weight: bold; }
-        .btn-signup { width: 100%; padding: 10px; background-color: #81c784; border: none; border-radius: 4px; color: #1b5e20; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; }
-        .linux-msg { display: none; background-color: #121212; color: #00ff66; border: 1px solid #00ff66; font-family: monospace; font-size: 11px; padding: 8px; margin-top: 10px; border-radius: 4px; text-align: left; }
+        #signup-screen { text-align: center; max-width: 400px; margin: 10px auto; }
+        .logo-circle { width: 70px; height: 70px; background-color: #2979ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+        .logo-circle svg { width: 40px; height: 40px; fill: white; }
+        .signup-title { font-size: 20px; font-weight: bold; margin-bottom: 12px; }
+        .input-group { margin-bottom: 8px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: #aaa; margin-bottom: 2px; }
+        .input-group input { width: 100%; padding: 7px 9px; background-color: #383838; border: 1px solid #555; border-radius: 4px; color: white; font-size: 12px; }
+        .error-msg { color: #ff5252; font-size: 11px; margin: 6px 0; display: none; font-weight: bold; }
+        .btn-signup { width: 100%; padding: 8px; background-color: #81c784; border: none; border-radius: 4px; color: #1b5e20; font-weight: bold; font-size: 13px; cursor: pointer; margin-top: 8px; }
+        .linux-msg { display: none; background-color: #121212; color: #00ff66; border: 1px solid #00ff66; font-family: monospace; font-size: 10px; padding: 6px; margin-top: 8px; border-radius: 4px; text-align: left; }
 
         /* Dashboard Screen */
         #dashboard-screen { display: none; }
-        .nav-tabs { display: flex; gap: 15px; margin-bottom: 12px; font-size: 13px; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 6px; }
+        .nav-tabs { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; font-weight: bold; border-bottom: 1px solid #444; padding-bottom: 4px; }
         .tab { cursor: pointer; color: #888; }
-        .tab.active { color: #fff; border-bottom: 2px solid #fff; padding-bottom: 4px; }
+        .tab.active { color: #fff; border-bottom: 2px solid #fff; padding-bottom: 2px; }
         
-        .main-layout { display: flex; gap: 12px; margin-bottom: 12px; }
+        .main-layout { display: flex; gap: 10px; margin-bottom: 6px; }
         .left-panel { flex: 1; }
-        .right-panel { width: 150px; display: flex; flex-direction: column; align-items: flex-end; }
+        .right-panel { width: 130px; display: flex; flex-direction: column; align-items: flex-end; }
 
-        .controls-row { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; font-size: 12px; flex-wrap: wrap; }
-        .control-item { display: flex; align-items: center; gap: 6px; }
+        .controls-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; font-size: 11px; flex-wrap: wrap; }
+        .control-item { display: flex; align-items: center; gap: 4px; }
         
-        .coin-select-wrapper { display: flex; align-items: center; background-color: #3d3d3d; border: 1px solid #555; border-radius: 4px; padding: 2px 6px; }
-        .coin-icon { width: 14px; height: 14px; margin-right: 4px; }
-        select { background-color: transparent; color: white; border: none; font-size: 12px; outline: none; cursor: pointer; }
+        .coin-select-wrapper { display: flex; align-items: center; background-color: #3d3d3d; border: 1px solid #555; border-radius: 4px; padding: 1px 4px; }
+        .coin-icon { width: 12px; height: 12px; margin-right: 3px; }
+        select { background-color: transparent; color: white; border: none; font-size: 11px; outline: none; cursor: pointer; }
         select option { background-color: #2d2d2d; color: white; }
 
-        .wallet-row { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 10px; }
-        .wallet-box { flex: 1; background-color: #444; border: 1px solid #555; padding: 8px 10px; border-radius: 4px; font-family: monospace; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd; }
+        .wallet-row { display: flex; align-items: center; gap: 6px; font-size: 11px; margin-top: 6px; }
+        .wallet-box { flex: 1; background-color: #3d3d3d; border: 1px solid #555; padding: 6px 8px; border-radius: 4px; font-family: monospace; font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ddd; }
         
-        /* Large Toggle Button */
-        .btn-toggle { width: 100%; height: 60px; background-color: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; }
+        /* Stop/Start Button */
+        .btn-toggle { width: 100%; height: 50px; background-color: #2e7d32; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
         .btn-toggle.stop-mode { background-color: #e53935; }
-        .sub-text { font-size: 9px; color: #aaa; margin-top: 6px; text-align: right; }
+        .sub-text { font-size: 8px; color: #aaa; margin-top: 3px; text-align: right; }
 
         /* Channels Section */
-        .channels-container { border-top: 1px dashed #555; border-bottom: 1px dashed #555; padding: 8px 0; margin-bottom: 12px; }
-        .channels-title { font-size: 10px; color: #aaa; margin-bottom: 6px; }
-        .channels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; font-size: 12px; }
-        .channel-item { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; font-weight: 500; color: #777; }
-        .channel-item span { color: #555; font-weight: bold; }
+        .channels-container { border-top: 1px dashed #444; border-bottom: 1px dashed #444; padding: 6px 0; margin-bottom: 8px; }
+        .channels-title { font-size: 9px; color: #aaa; margin-bottom: 4px; }
+        .channels-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 8px; font-size: 11px; }
+        .channel-item { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-weight: 500; color: #666; }
+        .channel-item span { color: #444; font-weight: bold; }
         .channel-item.active { color: #fff; }
         .channel-item.active span { color: #81c784; }
 
         /* Rent Time Section */
-        .rent-header { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        .rent-header { font-size: 14px; font-weight: bold; margin-bottom: 6px; color: #fff; }
         
-        .rent-line { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 13px; }
-        .net-text { font-weight: bold; white-space: nowrap; }
+        .rent-line { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 11px; }
+        .net-text { font-weight: bold; white-space: nowrap; margin-right: 6px; }
         
-        .progress-bar { display: flex; gap: 2px; flex: 1; max-width: 240px; }
-        .progress-cell { flex: 1; height: 22px; background-color: #3d3d3d; border: 1px solid #2b2b2b; transition: background-color 0.3s; }
+        .progress-bar { display: flex; gap: 2px; flex: 1; max-width: 200px; }
+        .progress-cell { flex: 1; height: 18px; background-color: #3d3d3d; border: 1px solid #2b2b2b; }
         .progress-cell.active { background-color: #66bb6a; }
-        .days-counter { font-size: 10px; color: #aaa; white-space: nowrap; margin-left: 2px; }
+        .days-counter { font-size: 9px; color: #aaa; white-space: nowrap; margin-left: 4px; }
 
-        /* Satoshi SWAP Rocker Switch */
-        .swap-container { display: flex; align-items: center; gap: 8px; margin-left: auto; }
-        .swap-label { font-size: 10px; color: #ccc; }
-        .rocker-switch { width: 34px; height: 18px; background-color: #555; border-radius: 10px; position: relative; cursor: pointer; transition: background-color 0.2s; }
-        .rocker-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background-color: white; border-radius: 50%; transition: all 0.2s; }
+        /* Satoshi SWAP Switch */
+        .swap-container { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+        .swap-label { font-size: 9px; color: #ccc; }
+        .rocker-switch { width: 30px; height: 16px; background-color: #555; border-radius: 8px; position: relative; cursor: pointer; }
+        .rocker-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; background-color: white; border-radius: 50%; transition: all 0.2s; }
         .rocker-switch.on { background-color: #66bb6a; }
-        .rocker-switch.on::after { left: 18px; }
+        .rocker-switch.on::after { left: 16px; }
 
-        /* Unified Validator Cards Style */
-        .top-dashed-container { margin-left: 8px; }
-        
+        /* Unified Validator Cards Style (یکسان‌سازی کامل اندازه و شکل) */
         .validator-card { 
-            width: 82px; 
-            height: 62px; 
+            width: 72px; 
+            height: 58px; 
             background-color: transparent; 
             border: 1.5px dashed #555; 
             color: transparent; 
-            padding: 4px; 
-            border-radius: 3px; 
-            font-size: 8px; 
+            padding: 2px; 
+            border-radius: 2px; 
+            font-size: 7.5px; 
             text-align: center; 
             font-weight: 500; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
             align-items: center; 
-            line-height: 1.15; 
-            transition: all 0.3s; 
+            line-height: 1.1; 
+            transition: all 0.2s; 
         }
 
         .validator-card.active { 
-            background-color: #66bb6a; 
+            background-color: #81c784; 
             color: #000; 
             border: 1.5px dashed #2e7d32; 
             font-weight: bold; 
         }
 
-        .fee-info { font-size: 13px; margin-bottom: 6px; color: #eee; font-weight: 500; }
-        .blocks-row { display: flex; gap: 8px; margin-bottom: 15px; }
+        .top-dashed-container { margin-left: 6px; }
 
-        .footer { display: flex; justify-content: space-between; align-items: center; background-color: #222; padding: 6px 12px; border-radius: 4px; font-size: 12px; }
-        .footer-logo { display: flex; align-items: center; gap: 6px; font-weight: bold; }
-        .footer-icon { width: 22px; height: 22px; background-color: #ab47bc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+        .fee-info { font-size: 11px; margin-bottom: 2px; color: #eee; font-weight: 500; }
+        .blocks-row { display: flex; justify-content: space-between; margin-top: 6px; margin-bottom: 10px; }
+
+        .footer { display: flex; justify-content: space-between; align-items: center; background-color: #1e1e1e; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+        .footer-logo { display: flex; align-items: center; gap: 5px; font-weight: bold; }
+        .footer-icon { width: 18px; height: 18px; background-color: #ab47bc; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; }
         .footer-user { font-weight: bold; }
     </style>
 </head>
@@ -267,7 +267,6 @@
     let timer1;
     let currentCardIndex = 0;
     
-    // محاسبه دقیق زمان ۲۴ ساعته واقعی (بر حسب میلی‌ثانیه)
     const DAY_IN_MS = 24 * 60 * 60 * 1000;
     let totalActiveTime = parseFloat(localStorage.getItem('nodeTotalActiveTime')) || 0;
     let lastStartTime = null;
@@ -351,11 +350,9 @@
             
             lastStartTime = Date.now();
 
-            // روشن کردن Satoshi SWAP
             swapActive = true;
             document.getElementById('swap-switch').classList.add('on');
 
-            // فعال کردن تیک کانال‌ها
             document.querySelectorAll('.channel-item').forEach(item => item.classList.add('active'));
 
             startProcessing();
@@ -364,24 +361,20 @@
             btn.classList.remove('stop-mode');
             clearInterval(timer1);
             
-            // ذخیره زمان سپری شده
             if (lastStartTime) {
                 totalActiveTime += (Date.now() - lastStartTime);
                 localStorage.setItem('nodeTotalActiveTime', totalActiveTime);
                 lastStartTime = null;
             }
 
-            // غیرفعال کردن ولیدیتورها در حالت STOP
             document.querySelectorAll('.validator-card').forEach(card => card.classList.remove('active'));
             document.getElementById('rent-power').innerText = "0.0";
             document.getElementById('tax-fee').innerText = "0/0";
             document.getElementById('high-priority').innerText = "0";
             
-            // غیرفعال کردن کلید سوئیچ ساتوشی
             swapActive = false;
             document.getElementById('swap-switch').classList.remove('on');
             
-            // برداشتن تیک کانال‌ها
             document.querySelectorAll('.channel-item').forEach(item => item.classList.remove('active'));
             
             currentCardIndex = 0;
@@ -414,7 +407,6 @@
             const cards = document.querySelectorAll('.blocks-row .validator-card');
             const topBlock = document.getElementById('top-dashed-block');
 
-            // پر شدن دونه‌دونه ۵ ولیدیتور پایین از سمت چپ
             if (currentCardIndex < cards.length) {
                 let card = cards[currentCardIndex];
                 card.classList.add('active');
@@ -422,13 +414,11 @@
                 card.querySelector('.tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
                 currentCardIndex++;
             } else if (currentCardIndex === cards.length) {
-                // پر شدن ولیدیتور بالا پس از ۵ کارت پایین
                 topBlock.classList.add('active');
                 document.getElementById('top-mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
                 document.getElementById('top-tx').innerText = Math.floor(Math.random() * 1500 + 1500).toLocaleString();
                 currentCardIndex++;
             } else {
-                // به‌روزرسانی زنده مقادیر
                 cards.forEach(card => {
                     if (card.classList.contains('active')) {
                         card.querySelector('.mb').innerText = (Math.random() * 1.5 + 1.0).toFixed(2);
@@ -441,16 +431,13 @@
                 }
             }
 
-            // متغیر شدن قدرت Rent Time
             document.getElementById('rent-power').innerText = (Math.random() * 0.8 + 3.6).toFixed(1);
 
-            // به روزرسانی کارمزدها
             let lowTax = Math.floor(Math.random() * 5 + 12);
             let highTax = lowTax + Math.floor(Math.random() * 6 + 4);
             document.getElementById('tax-fee').innerText = `${lowTax}/${highTax}`;
             document.getElementById('high-priority').innerText = Math.floor(Math.random() * 8 + 22);
 
-            // بروزرسانی مربع‌های سبز بر اساس تایمر ۲۴ ساعته واقعی
             updateProgressBarUI();
 
         }, 1200);
