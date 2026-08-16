@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LNDHUB - Lightning Node Manager</title>
+    <!-- Three.js Library for 3D Globe -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -13,13 +15,34 @@
         }
 
         body {
-            background-color: #0b0d17;
+            background-color: #030712;
             color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* 3D Canvas Background */
+        #globe-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Content Overlay */
+        .content-layer {
+            position: relative;
+            z-index: 2;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            background: radial-gradient(circle at center, transparent 20%, rgba(3, 7, 18, 0.8) 80%);
         }
 
         /* Header Navigation */
@@ -30,67 +53,72 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
 
         .brand-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 22px;
+            gap: 10px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 1px;
         }
 
         .lightning-icon {
-            color: #2979ff;
-            font-size: 26px;
+            color: #3b82f6;
+            font-size: 24px;
+            filter: drop-shadow(0 0 8px #3b82f6);
         }
 
         .nav-icons {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
         }
 
         .nav-btn {
             width: 36px;
             height: 36px;
-            background-color: #1a233a;
+            background-color: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 14px;
+            backdrop-filter: blur(8px);
         }
 
         .nav-link-badge {
-            background-color: #1a233a;
-            color: #2979ff;
+            background-color: #2563eb;
+            color: #ffffff;
             font-weight: bold;
-            font-size: 13px;
-            padding: 6px 12px;
+            font-size: 12px;
+            padding: 6px 14px;
             border-radius: 6px;
             text-decoration: none;
+            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
         }
 
         .nav-link-text {
-            color: #aaa;
+            color: #94a3b8;
             font-size: 14px;
             text-decoration: none;
-            margin-left: 5px;
         }
 
         /* Main Hero Section */
         .hero-title {
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 64px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 68px;
             font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 40px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+            margin-bottom: 35px;
+            text-shadow: 0 0 30px rgba(59, 130, 246, 0.5);
             text-align: center;
+            background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         /* Stats Cards Layout */
@@ -101,59 +129,69 @@
             flex-wrap: wrap;
             width: 100%;
             max-width: 1100px;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
         }
 
         .stat-card {
-            background-color: #1e2942;
-            border: 1px solid #2a3a5e;
-            border-radius: 12px;
-            padding: 20px;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 14px;
+            padding: 22px 18px;
             text-align: center;
             flex: 1;
             min-width: 160px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(59, 130, 246, 0.1);
         }
 
         .stat-card.large {
-            flex: 1.5;
+            flex: 1.4;
         }
 
         .stat-label {
             font-size: 13px;
-            color: #a0aec0;
+            color: #94a3b8;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .stat-value {
             font-size: 32px;
             font-weight: 800;
             color: #ffffff;
+            letter-spacing: 0.5px;
         }
 
         .stat-card.large .stat-value {
-            color: #64b5f6;
+            color: #38bdf8;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
 
         /* Search Bar */
         .search-container {
             width: 100%;
-            max-width: 550px;
+            max-width: 580px;
             position: relative;
         }
 
         .search-input {
             width: 100%;
-            padding: 14px 24px;
-            padding-right: 60px;
-            background-color: #1e2942;
-            border: 1px solid #2a3a5e;
-            border-radius: 30px;
+            padding: 16px 28px;
+            padding-right: 65px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
             color: #ffffff;
             font-size: 16px;
             outline: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
         }
 
         .search-input::placeholder {
@@ -162,76 +200,170 @@
 
         .search-btn {
             position: absolute;
-            right: 6px;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            width: 42px;
-            height: 42px;
-            background-color: #4fc3f7;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #38bdf8, #2563eb);
             border: none;
             border-radius: 50%;
-            color: #0b0d17;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 18px;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="brand-logo">
-            <span class="lightning-icon">⚡</span>
-            <span>LND WORLD</span>
+    <!-- 3D Canvas Background -->
+    <div id="globe-container"></div>
+
+    <!-- UI Overlay Layer -->
+    <div class="content-layer">
+        <!-- Header -->
+        <div class="header">
+            <div class="brand-logo">
+                <span class="lightning-icon">⚡</span>
+                <span>LND WORLD</span>
+            </div>
+
+            <div class="nav-icons">
+                <div class="nav-btn">⚡</div>
+                <div class="nav-btn">🌐</div>
+                <a href="#" class="nav-link-badge">1ML</a>
+                <a href="#" class="nav-link-text">Amboss</a>
+            </div>
         </div>
 
-        <div class="nav-icons">
-            <div class="nav-btn">⚡</div>
-            <div class="nav-btn">📊</div>
-            <a href="#" class="nav-link-badge">1ML</a>
-            <a href="#" class="nav-link-text">Amboss</a>
+        <!-- Title -->
+        <h1 class="hero-title">LND WORLD</h1>
+
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Nodes</div>
+                <div class="stat-value">6,013</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Active Channels</div>
+                <div class="stat-value">19,920</div>
+            </div>
+
+            <div class="stat-card large">
+                <div class="stat-label">Network Capacity</div>
+                <div class="stat-value">2,630.34 BTC</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">New Nodes</div>
+                <div class="stat-value">11</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">New Channels</div>
+                <div class="stat-value">274</div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search Node ...">
+            <button class="search-btn">🔍</button>
         </div>
     </div>
 
-    <!-- Main Title -->
-    <h1 class="hero-title">LND WORLD</h1>
+    <!-- 3D Globe Render Script -->
+    <script>
+        const container = document.getElementById('globe-container');
 
-    <!-- Dashboard Cards -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-label">Total Nodes</div>
-            <div class="stat-value">6,013</div>
-        </div>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 220;
+        camera.position.y = -40;
 
-        <div class="stat-card">
-            <div class="stat-label">Active Channels</div>
-            <div class="stat-value">19,920</div>
-        </div>
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
 
-        <div class="stat-card large">
-            <div class="stat-label">Network Capacity</div>
-            <div class="stat-value">2,630.34 BTC</div>
-        </div>
+        // Globe Sphere Wireframe & Points
+        const geometry = new THREE.SphereGeometry(60, 48, 48);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x1d4ed8,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.25
+        });
+        const globe = new THREE.Mesh(geometry, material);
+        scene.add(globe);
 
-        <div class="stat-card">
-            <div class="stat-label">New Nodes</div>
-            <div class="stat-value">11</div>
-        </div>
+        // Particle Stars / Nodes Around Earth
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 700;
+        const posArray = new Float32Array(particlesCount * 3);
 
-        <div class="stat-card">
-            <div class="stat-label">New Channels</div>
-            <div class="stat-value">274</div>
-        </div>
-    </div>
+        for(let i=0; i<particlesCount*3; i+=3) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = u * 2.0 * Math.PI;
+            const phi = Math.acos(2.0 * v - 1.0);
+            const r = 62 + Math.random() * 8; // Slightly larger than globe radius
 
-    <!-- Search Input -->
-    <div class="search-container">
-        <input type="text" class="search-input" placeholder="Search Node ...">
-        <button class="search-btn">🔍</button>
-    </div>
+            posArray[i] = r * Math.sin(phi) * Math.cos(theta);
+            posArray[i+1] = r * Math.sin(phi) * Math.sin(theta);
+            posArray[i+2] = r * Math.cos(phi);
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 1.5,
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleSystem);
+
+        // Outer Atmosphere Glow Ring
+        const ringGeo = new THREE.RingGeometry(65, 75, 64);
+        const ringMat = new THREE.MeshBasicMaterial({
+            color: 0x2563eb,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.15
+        });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Slow Earth Rotation
+            globe.rotation.y += 0.002;
+            particleSystem.rotation.y += 0.002;
+            ring.rotation.z += 0.001;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Responsive Resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 
 </body>
 </html>
