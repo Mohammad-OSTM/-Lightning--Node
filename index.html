@@ -65,7 +65,7 @@
         .rent-line { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-size: 11px; }
         .net-text { font-weight: bold; white-space: nowrap; margin-right: 8px; font-size: 12px; }
         
-        /* Large Green Progress Bar Cells (Matching Original Image) */
+        /* Progress Bar */
         .progress-bar { display: flex; gap: 3px; flex: 1; max-width: 240px; }
         .progress-cell { flex: 1; height: 26px; background-color: #383838; border: 1px solid #1a1a1a; }
         .progress-cell.active { background-color: #4caf50; }
@@ -85,8 +85,8 @@
             width: 76px; 
             height: 58px; 
             background-color: transparent; 
-            border: 1.5px dashed #4caf50; 
-            color: #4caf50; 
+            border: 1.5px dashed #555; 
+            color: #555; 
             padding: 2px; 
             border-radius: 2px; 
             font-size: 7px; 
@@ -97,15 +97,20 @@
             justify-content: center; 
             align-items: center; 
             line-height: 1.1; 
+            transition: all 0.4s ease;
+        }
+        .validator-card-dashed.active {
+            border-color: #4caf50;
+            color: #4caf50;
         }
 
-        /* Solid Green Validator Cards (Matching Original Image) */
+        /* Solid Green Validator Cards */
         .blocks-row { display: flex; justify-content: space-between; margin-top: 8px; margin-bottom: 12px; }
         .validator-card-solid { 
             width: 76px; 
             height: 58px; 
             background-color: #383838; 
-            color: transparent; 
+            color: #777; 
             padding: 2px; 
             border-radius: 2px; 
             font-size: 7px; 
@@ -116,12 +121,14 @@
             justify-content: center; 
             align-items: center; 
             line-height: 1.1; 
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            opacity: 0.5;
         }
 
         .validator-card-solid.active { 
             background-color: #66bb6a; 
             color: #000; 
+            opacity: 1;
         }
 
         .fee-info { font-size: 12px; margin-bottom: 3px; color: #fff; font-weight: bold; }
@@ -282,13 +289,11 @@
     let isRunning = false;
     let swapActive = false;
     let timer1;
-    let currentCardIndex = 0;
     
     const DAY_IN_MS = 24 * 60 * 60 * 1000;
     let totalActiveTime = parseFloat(localStorage.getItem('nodeTotalActiveTime')) || 0;
     let lastStartTime = null;
 
-    // الگوریتم استخراج یوزرنیم (اندیس‌های زوج از چپ)
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
         if (cleanCode.length < 20) return "0000000000";
@@ -369,6 +374,7 @@
         let btn = document.getElementById('action-btn');
         let channelItems = document.querySelectorAll('.channel-item');
         let validatorCards = document.querySelectorAll('.validator-card-solid');
+        let topDashed = document.getElementById('top-dashed-block');
         
         isRunning = !isRunning;
 
@@ -385,9 +391,17 @@
                 channelItems[i].classList.add('active');
             }
 
+            // ۱. ابتدا ۵ کارت پایین روشن می‌شوند
             for (let i = 0; i < validatorCards.length; i++) {
                 validatorCards[i].classList.add('active');
             }
+
+            // ۲. کارت اصلی بالا با ۱.۵ ثانیه تأخیر روشن می‌شود
+            setTimeout(() => {
+                if (isRunning) {
+                    topDashed.classList.add('active');
+                }
+            }, 1500);
 
             startProcessing();
         } else {
@@ -404,6 +418,8 @@
             for (let i = 0; i < validatorCards.length; i++) {
                 validatorCards[i].classList.remove('active');
             }
+            topDashed.classList.remove('active');
+
             document.getElementById('rent-power').innerText = "0.0";
             document.getElementById('tax-fee').innerText = "0/0";
             document.getElementById('high-priority').innerText = "0";
@@ -415,7 +431,6 @@
                 channelItems[i].classList.remove('active');
             }
             
-            currentCardIndex = 0;
             updateProgressBarUI();
         }
     }
