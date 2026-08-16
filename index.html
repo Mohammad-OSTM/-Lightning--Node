@@ -8,8 +8,16 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: #121212; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
         
-        .window { width: 100%; max-width: 640px; background-color: #2b2b2b; border-radius: 4px; border: 1px solid #333; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .window-header { background-color: #383838; padding: 3px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #ccc; border-bottom: 1px solid #444; }
+        .window { width: 100%; max-width: 640px; background-color: #2b2b2b; border-radius: 4px; border: 1px solid #333; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); transition: all 0.3s ease; }
+        .window.maximized { max-width: 100vw; width: 100vw; height: 100vh; border-radius: 0; border: none; }
+        .window.maximized .window-body { height: calc(100vh - 25px); overflow-y: auto; }
+        
+        .window-header { background-color: #383838; padding: 3px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #ccc; border-bottom: 1px solid #444; user-select: none; }
+        .window-controls { display: flex; gap: 8px; }
+        .window-btn { cursor: pointer; padding: 0 4px; font-weight: bold; }
+        .window-btn:hover { color: #fff; }
+        .window-btn.close-btn:hover { color: #ff5252; }
+
         .window-body { padding: 12px 14px; background-color: #262626; }
 
         /* Signup Screen */
@@ -142,13 +150,17 @@
 </head>
 <body>
 
-<div class="window">
+<div class="window" id="app-window">
     <div class="window-header">
         <span id="header-title">Lightning Node</span>
-        <div><span>—</span> <span>□</span> <span>✕</span></div>
+        <div class="window-controls">
+            <span class="window-btn" onclick="minimizeWindow()">—</span>
+            <span class="window-btn" onclick="maximizeWindow()">□</span>
+            <span class="window-btn close-btn" onclick="closeWindow()">✕</span>
+        </div>
     </div>
     
-    <div class="window-body">
+    <div class="window-body" id="window-body">
         <!-- Signup Screen -->
         <div id="signup-screen">
             <div class="logo-circle">
@@ -295,6 +307,25 @@
     let totalActiveTime = parseFloat(localStorage.getItem('nodeTotalActiveTime')) || 0;
     let lastStartTime = null;
 
+    /* Window Control Functions */
+    function minimizeWindow() {
+        let body = document.getElementById('window-body');
+        if (body.style.display === 'none') {
+            body.style.display = 'block';
+        } else {
+            body.style.display = 'none';
+        }
+    }
+
+    function maximizeWindow() {
+        let app = document.getElementById('app-window');
+        app.classList.toggle('maximized');
+    }
+
+    function closeWindow() {
+        document.getElementById('app-window').style.display = 'none';
+    }
+
     function generateUsernameFromCode(code) {
         let cleanCode = code.replace(/[^0-9]/g, '');
         if (cleanCode.length < 20) return "0000000000";
@@ -387,7 +418,6 @@
             
             lastStartTime = Date.now();
 
-            // روشن شدن ترتیبی ۵ کارت پایین (با تاخیر ۱.۵ ثانیه)
             let delayStep = 1500; 
             validatorCards.forEach((card, index) => {
                 let t = setTimeout(() => {
@@ -396,7 +426,6 @@
                 sequenceTimeouts.push(t);
             });
 
-            // روشن شدن کارت بالایی بعد از کارت‌های پایین
             let totalBottomTime = validatorCards.length * delayStep;
             let tTop = setTimeout(() => {
                 if (isRunning) topDashed.classList.add('active');
@@ -415,7 +444,6 @@
                 lastStartTime = null;
             }
 
-            // خاموش کردن کارت‌های ولیدیتور
             for (let i = 0; i < validatorCards.length; i++) {
                 validatorCards[i].classList.remove('active');
             }
